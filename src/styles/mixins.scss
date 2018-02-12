@@ -1,0 +1,40 @@
+@mixin hd-screen {
+    @media #{$mq-retina} {
+        @content
+    }
+}
+
+@mixin hightlight {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@mixin placeholder {
+    &::-webkit-input-placeholder {@content}
+    &:-moz-placeholder           {@content}
+    &::-moz-placeholder          {@content}
+    &:-ms-input-placeholder      {@content}  
+}
+
+@mixin size($width, $height) {
+    width: $width;
+    height: $height;
+  }
+  
+@mixin square($size) {
+    @include size($size, $size);
+}
+
+@mixin icon($name, $size, $angle: 0deg) {
+    background-image: url("~Assets/#{$name}.png");
+    background-size: 10px 10px;
+    background-repeat: no-repeat;
+
+    @include square($size);
+
+    @include hd-screen {                
+        background-image: url("~Assets/#{$name}@2x.png")
+    }
+
+    transform: rotate($angle);
+}

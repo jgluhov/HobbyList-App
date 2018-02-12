@@ -1,0 +1,46 @@
+.hobby-form__input {
+    font-size: $font-size-base;
+    padding: 8px;
+    width: $hobby-form__input-width;
+    border-radius: 3px;
+    line-height: 16px;
+    outline: none;
+    border: 2px solid lightgray;
+
+    @include placeholder {        
+        opacity: 1;
+    }
+
+    &:focus {
+        @include placeholder {        
+            opacity: 0;
+            transition: opacity $hobby-form__anim-duration ease;
+        }
+    }
+}
+
+.hobby-form__btn {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 8px 10px;
+    border-radius: 3px;
+    color: $hobby-form__btn-color;
+    background-image: linear-gradient(to bottom, rgb(231, 231, 231), rgb(200, 200, 200));    
+    outline: none;
+    border: none;
+    box-shadow: 0px 10px 10px -12px rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    transition: opacity $hobby-form__anim-duration ease-in-out;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:active {
+        box-shadow: none;
+    }
+
+    &[aria-hidden='true'] {
+        opacity: 0;
+    }
+}

@@ -12,7 +12,21 @@
                     <hr class="section__line">
                     <fieldset class="section__subheader">
                         <legend>Музыка</legend>
-                    </fieldset>        
+                    </fieldset>
+
+                    <form name="hobby-form" class="hobby-form">
+                        <label for="text-field"></label>
+                        <input type="text" 
+                            id="text-field" 
+                            placeholder="добавьте любимую музыку"
+                            class="hobby-form__input"
+                            pattern="^[a-zA-ZА-Яа-яЁё\s]+$"
+                        />
+                        <button type="submit" class="hobby-form__btn" aria-hidden="true">
+                            Добавить
+                        </button>
+                    </form>
+
                 </div>           
             </section>
             <section class="section">
