@@ -3,18 +3,18 @@
         "module": "commonjs",
         "noEmit": true,
         "pretty": true,
-        "target": "esnext",
+        "target": "es6",
         "skipLibCheck": true,
         "moduleResolution": "node",
         "baseUrl": ".",
         "paths": {
-            "@Utils": [
+            "@utils": [
                 "src/utils"
             ],
-            "@Models": [
+            "@models": [
                 "src/models"
             ],
-            "@Components": [
+            "@components": [
                 "src/components"
             ]
         },

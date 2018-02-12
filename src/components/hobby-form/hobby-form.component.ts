@@ -1,14 +1,20 @@
 /**
- * HobbyList form
+ * HobbyList | Hobby Form
  */
-import * as Utils from '@Utils';
+import * as Models from '@models';
+import * as Utils from '@utils';
 
 import styles from './hobby-form.styles.scss';
 import template from './hobby-form.template.html';
 
+type HobbyFormState = {
+    belonging?: string;
+};
+
 export class HobbyForm extends HTMLElement {
     public root: ShadowRoot;
     public content: DocumentFragment;
+    public state: HobbyFormState = {};
     public $form: HTMLFormElement;
     public $btn: HTMLButtonElement;
     public $input: HTMLInputElement;
@@ -26,6 +32,20 @@ export class HobbyForm extends HTMLElement {
         );
 
         this.root.appendChild(this.content);
+    }
+
+    static get observedAttributes(): string[] {
+        return [
+            'belonging'
+        ];
+    }
+
+    public attributeChangedCallback(
+        attrName: string,
+        oldVal: string,
+        newVal: string
+    ): void {
+        this.state[attrName] = newVal;
     }
 
     public connectedCallback(): void {
@@ -70,16 +90,15 @@ export class HobbyForm extends HTMLElement {
     }
 
     public createHobby(text: string): void {
-        document.dispatchEvent(new CustomEvent('hobby:create', {
-            detail: {text}
-        }));
+        const hobby: Models.Hobby = new Models.Hobby(text, this.state.belonging);
+        Utils.dispatchEvent<Models.Hobby>('hobby:create', hobby);
     }
 
     public hiddenBtn(hide: boolean): void {
         if (hide) {
-            this.$btn.setAttribute('aria-hidden', 'true');
+            this.$btn.setAttribute('hidden', '');
         } else {
-            this.$btn.removeAttribute('aria-hidden');
+            this.$btn.removeAttribute('hidden');
         }
     }
 }

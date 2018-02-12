@@ -1,6 +1,7 @@
 /**
  * HobbyList Dom Utils
  */
+
 export function createShadowRoot(style: string, template: string): DocumentFragment {
     const templateEl: HTMLTemplateElement = document.createElement('template');
     const styleEl: HTMLStyleElement = document.createElement('style');
@@ -13,4 +14,14 @@ export function createShadowRoot(style: string, template: string): DocumentFragm
     content.appendChild(templateEl.content);
 
     return content;
+}
+
+export function dispatchEvent<T>(eventName: string, data: T): void {
+    document.dispatchEvent(new CustomEvent(eventName, {
+        detail: {
+            data
+        },
+        bubbles: true,
+        composed: true
+    }));
 }

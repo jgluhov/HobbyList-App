@@ -1,13 +1,13 @@
-@import '~@Styles/variables.scss';
-@import '~@Styles/mixins.scss';
+@import '~@styles/variables.scss';
+@import '~@styles/mixins.scss';
 
 :host {
     all: initial;
     display: block;
     contain: content;
 
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
+    font-family: $font-family-base;
+    font-size: $font-size-base;
 }
 
 :host .hobby-form__input {
@@ -17,7 +17,7 @@
     border-radius: 3px;
     line-height: 16px;
     outline: none;
-    border: 2px solid lightgray;
+    border: 2px solid $hobby-form__input-border-color;
 
     @include placeholder {        
         opacity: 1;
@@ -52,7 +52,8 @@
         box-shadow: none;
     }
 
-    &[aria-hidden='true'] {
+    &[hidden] {
         opacity: 0;
+        display: inline-block;
     }
 }

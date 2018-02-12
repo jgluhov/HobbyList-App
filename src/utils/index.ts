@@ -1,4 +1,5 @@
 /**
  * HobbyList Utils
  */
-export { createShadowRoot } from './dom';
+export { uuid } from './uuid';
+export { createShadowRoot, dispatchEvent } from './dom';

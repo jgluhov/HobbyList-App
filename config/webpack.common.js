@@ -11,11 +11,11 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.png', '.scss', '.html'],
         alias: {
-            '@Utils': path.resolve(__dirname, '..', 'src', 'utils'),
-            '@Models': path.resolve(__dirname, '..', 'src', 'models'),
-            '@Components': path.resolve(__dirname, '..', 'src', 'components'),
-            '@Styles': path.resolve(__dirname, '..', 'src', 'styles'),
-            '@Assets': path.resolve(__dirname, '..', 'src', 'assets')
+            '@utils': path.resolve(__dirname, '..', 'src', 'utils'),
+            '@models': path.resolve(__dirname, '..', 'src', 'models'),
+            '@components': path.resolve(__dirname, '..', 'src', 'components'),
+            '@styles': path.resolve(__dirname, '..', 'src', 'styles'),
+            '@assets': path.resolve(__dirname, '..', 'src', 'assets')
         },
     },
 
