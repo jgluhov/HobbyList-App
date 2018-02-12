@@ -29,7 +29,7 @@ export class HobbyForm extends HTMLElement {
     }
 
     public connectedCallback(): void {
-        this.$form = this.querySelector('form[name="hobby-form"]');
+        this.$form = this.root.querySelector('form[name="hobby-form"]');
         this.$btn = this.$form.querySelector('.hobby-form__btn');
         this.$input = this.$form.querySelector('.hobby-form__input');
 

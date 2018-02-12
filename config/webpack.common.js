@@ -4,7 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-    entry: './src/main',
+    entry: [
+        'babel-polyfill', './src/main'
+    ],
 
     resolve: {
         extensions: ['.ts', '.js', '.png', '.scss', '.html'],
@@ -28,7 +30,7 @@ module.exports = {
                         presets: [
                             '@babel/preset-env',
                             '@babel/preset-stage-3',
-                            '@babel/preset-typescript',
+                            '@babel/preset-typescript'
                         ],
                         plugins: [
                             'transform-custom-element-classes',
