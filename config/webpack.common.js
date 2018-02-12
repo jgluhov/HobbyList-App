@@ -7,13 +7,20 @@ module.exports = {
     entry: './src/main',
 
     resolve: {
-        extensions: ['.js', '.png', '.scss', '.html'],
+        extensions: ['.ts', '.js', '.png', '.scss', '.html'],
+        alias: {
+            '@Utils': path.resolve(__dirname, '..', 'src', 'utils'),
+            '@Models': path.resolve(__dirname, '..', 'src', 'models'),
+            '@Components': path.resolve(__dirname, '..', 'src', 'components'),
+            '@Styles': path.resolve(__dirname, '..', 'src', 'styles'),
+            '@Assets': path.resolve(__dirname, '..', 'src', 'assets')
+        },
     },
 
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.ts$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
@@ -21,9 +28,10 @@ module.exports = {
                         presets: [
                             '@babel/preset-env',
                             '@babel/preset-stage-3',
+                            '@babel/preset-typescript',
                         ],
                         plugins: [
-                            '@babel/transform-runtime',
+                            'transform-custom-element-classes',
                         ],
                     },
                 },
@@ -43,16 +51,33 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                exclude: /node_modules/,
                 use: ExtractTextPlugin.extract({
                     use: [{
-                        loader: 'css-loader',
+                        loader: 'css-loader'
                     }, {
-                        loader: 'sass-loader',
-                    }],
-                    fallback: 'style-loader',
+                        loader: 'sass-loader'
+                    }],                    
+                    fallback: 'style-loader'
                 }),
+                include: [
+                    path.resolve(__dirname, '..', 'src/styles')
+                ]
             },
+            {
+                test: /\.scss$/,
+                use: [{
+                    loader: 'css-loader'
+                }, {
+                    loader: 'sass-loader'
+                }], 
+                exclude: [
+                    path.resolve(__dirname, '..', 'src/styles')
+                ]
+            },
+            {
+                test: /\.html$/,
+                use: 'raw-loader'
+            }
         ],
     },
 

@@ -1,0 +1,25 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+      "tslint-microsoft-contrib"
+  ],
+  "jsRules": {},
+  "rules": {
+      "no-relative-imports": false,
+      "no-import-side-effect": false,
+      "no-console": false,
+      "no-implicit-dependencies": false,
+      "export-name": false,
+      "no-inner-html": false,
+      "import-name": false,
+      "no-submodule-imports": false,
+      "callable-types": false,
+      "no-reserved-keywords": false,
+      "no-any": false,
+      "no-empty": false,
+      "function-name": false,
+      "prefer-array-literal": false,
+      "prefer-object-spread": false
+  },
+  "rulesDirectory": []
+}

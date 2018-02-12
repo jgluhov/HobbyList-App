@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noEmit": true,
+        "pretty": true,
+        "target": "esnext",
+        "skipLibCheck": true,
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "@Utils": [
+                "src/utils"
+            ],
+            "@Models": [
+                "src/models"
+            ],
+            "@Components": [
+                "src/components"
+            ]
+        },
+        "typeRoots" : [
+            "./src/typings", 
+            "./node_modules/@types"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
