@@ -18,17 +18,17 @@ module.exports = function(config) {
 
     webpackMiddleware: {
       stats: 'errors-only',
-      noInfo: true
+      noInfo: true,
     },
 
     webpackServer: {
-      noInfo: true
+      noInfo: true,
     },
 
     // list of files / patterns to load in the browser
     files: [
       'spec/**/*.spec.js',
-      'spec/fixtures/*.fixture.html'
+      'spec/fixtures/*.fixture.html',
     ],
 
 
@@ -41,7 +41,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'spec/**/*.spec.js': ['webpack'],
-      'spec/fixtures/*.fixture.html': ['html2js']
+      'spec/fixtures/*.fixture.html': ['html2js'],
     },
 
     plugins: [
@@ -51,7 +51,7 @@ module.exports = function(config) {
       require('karma-jasmine'),
       require('karma-spec-reporter'),
       require('karma-html2js-preprocessor'),
-      require('karma-fixture')
+      require('karma-fixture'),
     ],
 
     // test results reporter to use
@@ -66,7 +66,7 @@ module.exports = function(config) {
       suppressPassed: false,
       suppressSkipped: true,
       showSpecTiming: false,
-      failFast: false
+      failFast: false,
     },
 
 
@@ -79,11 +79,11 @@ module.exports = function(config) {
 
 
     // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
 
-    // enable / disable watching file and executing tests whenever any file changes
+    // enable / disable watching file and executing
+    // tests whenever any file changes
     autoWatch: true,
 
 
@@ -98,6 +98,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
-  })
-}
+    concurrency: Infinity,
+  });
+};
