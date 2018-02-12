@@ -19,7 +19,8 @@
       "no-empty": false,
       "function-name": false,
       "prefer-array-literal": false,
-      "prefer-object-spread": false
+      "prefer-object-spread": false,
+      "variable-name": false
   },
   "rulesDirectory": []
 }

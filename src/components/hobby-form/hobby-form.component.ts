@@ -12,9 +12,8 @@ type HobbyFormState = {
 };
 
 export class HobbyForm extends HTMLElement {
-    public root: ShadowRoot;
-    public content: DocumentFragment;
-    public state: HobbyFormState = {};
+    public _shadowRoot: ShadowRoot;
+    public _state: HobbyFormState = {};
     public $form: HTMLFormElement;
     public $btn: HTMLButtonElement;
     public $input: HTMLInputElement;
@@ -22,16 +21,16 @@ export class HobbyForm extends HTMLElement {
     constructor() {
         super();
 
-        this.root = this.attachShadow({
+        this._shadowRoot = this.attachShadow({
             mode: 'open'
         });
 
-        this.content = Utils.createShadowRoot(
+        const content: DocumentFragment = Utils.createShadowRoot(
             styles.toString(),
             template
         );
 
-        this.root.appendChild(this.content);
+        this._shadowRoot.appendChild(content);
     }
 
     static get observedAttributes(): string[] {
@@ -40,61 +39,60 @@ export class HobbyForm extends HTMLElement {
         ];
     }
 
-    public attributeChangedCallback(
-        attrName: string,
-        oldVal: string,
-        newVal: string
-    ): void {
-        this.state[attrName] = newVal;
+    public attributeChangedCallback(attrName: string, oldVal: string, newVal: string): void {
+        this._state[attrName] = newVal;
     }
 
     public connectedCallback(): void {
-        this.$form = this.root.querySelector('form[name="hobby-form"]');
-        this.$btn = this.$form.querySelector('.hobby-form__btn');
-        this.$input = this.$form.querySelector('.hobby-form__input');
+        this.$form = this._shadowRoot.querySelector('[name="hobby-form"]');
+        this.$btn = this.$form.querySelector('.form__btn');
+        this.$input = this.$form.querySelector('.form__input');
 
-        this.addEventListeners();
+        this._addEventListeners();
     }
 
-    public addEventListeners(): void {
-        this.$form.addEventListener('click', this.handleClick);
+    public _addEventListeners(): void {
+        document.addEventListener('click', this._handleDocumentClick);
+        this.$form.addEventListener('click', this._handleClick);
     }
 
-    public handleClick = (e: MouseEvent): void => {
+    public _handleClick = (e: MouseEvent): void => {
         const tagName: string = (<HTMLElement>e.target).tagName.toLowerCase();
 
         if (tagName === 'input') {
-            this.handleInputClick(e);
+            this._handleInputClick(e);
         } else if (tagName === 'button') {
-            this.handleSubmit(e);
+            this._handleSubmit(e);
         }
     }
 
-    public handleInputClick(e: MouseEvent): void {
+    public _handleInputClick(e: MouseEvent): void {
         e.stopPropagation();
-        this.hiddenBtn(false);
+        this._hiddenBtn(false);
     }
 
-    public handleSubmit(e: MouseEvent): void {
+    public _handleSubmit(e: MouseEvent): void {
         e.preventDefault();
 
-        this.createHobby(this.$input.value);
-        this.$input.value = '';
-        this.hiddenBtn(true);
-    }
-
-    public handleDocumentClick(e: MouseEvent): void {
-        if (!this.$input.value) {
-            this.hiddenBtn(true);
+        if (this.$form.checkValidity()) {
+            this._createHobby(this.$input.value);
+            this.$input.value = '';
+            this._hiddenBtn(true);
         }
     }
 
-    public createHobby(text: string): void {
-        const hobby: Models.Hobby = new Models.Hobby(text, this.state.belonging);
+    public _handleDocumentClick = (e: MouseEvent): void => {
+        if (!this.$input.value) {
+            this._hiddenBtn(true);
+        }
+    }
+
+    public _createHobby(text: string): void {
+        const hobby: Models.Hobby = new Models.Hobby(text, this._state.belonging);
         Utils.dispatchEvent<Models.Hobby>('hobby:create', hobby);
     }
 
-    public hiddenBtn(hide: boolean): void {
+    public _hiddenBtn(hide: boolean): void {
         if (hide) {
             this.$btn.setAttribute('hidden', '');
         } else {

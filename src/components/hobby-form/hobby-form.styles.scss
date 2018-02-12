@@ -10,7 +10,7 @@
     font-size: $font-size-base;
 }
 
-:host .hobby-form__input {
+:host .form__input {
     font-size: $font-size-base;
     padding: 8px;
     width: $hobby-form__input-width;
@@ -29,9 +29,13 @@
             transition: opacity $hobby-form__anim-duration ease;
         }
     }
+
+    &:invalid {
+        border-color: lightsalmon;
+    }
 }
 
-:host .hobby-form__btn {
+:host .form__btn {
     font-size: $font-size-base;
     line-height: 20px;
     padding: 8px 10px;

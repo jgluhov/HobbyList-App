@@ -1,12 +1,15 @@
-<form name="hobby-form" class="hobby-form">
-    <label for="text-field"></label>
-    <input type="text" 
-        id="text-field" 
-        placeholder="добавьте любимую музыку"
-        class="hobby-form__input"
-        pattern="^[a-zA-ZА-Яа-яЁё\s]+$"
-    />
-    <button type="submit" class="hobby-form__btn" hidden>
-        Добавить
-    </button>
-</form>
+<div class="hobby-form">
+    <form name="hobby-form" class="hobby-form__form">
+        <label for="text-field"></label>
+        <input type="text" 
+            id="text-field" 
+            placeholder="добавьте любимую музыку"
+            class="form__input"
+            pattern="^[a-zA-ZА-Яа-яЁё\s]+$"
+            name="text"
+        />
+        <button type="submit" class="form__btn" hidden>
+            Добавить
+        </button>
+    </form>
+</div>
