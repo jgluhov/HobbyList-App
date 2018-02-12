@@ -1,0 +1,29 @@
+.section {
+    display: block;
+    margin-bottom: 16px;
+
+    .section__header {
+        font-size: 14px;
+    }
+
+    .section__line {
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
+    .section__subheader {
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        padding-left: 0;
+        font-size: 14px;
+        margin: 0;
+        border-top-width: 1px;
+        color: rgb(36, 36, 36);
+        border-color: white;
+    }
+
+    .section__hobby-form {
+        margin-left: 20px;
+    }
+}
