@@ -13,7 +13,3 @@ declare module '*.scss' {
 interface CustomEventInit {
     composed: true
 }
-
-interface WindowStore extends Window {
-    __data__: Hobby[]
-}

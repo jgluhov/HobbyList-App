@@ -3,7 +3,7 @@
  */
 import { Hobby } from '@models';
 
-type StoreResponse = {
+export type StoreResponse = {
     items: Hobby[];
     total: number;
 };
@@ -28,11 +28,19 @@ export class Store {
         );
     }
 
-    public get(): Promise<StoreResponse> {
+    public get(startIndex: number = 0, count: number = 0): Promise<StoreResponse> {
         return new Promise((resolve: PromiseResolve<StoreResponse>): void => {
+            let items: Hobby[];
+
+            if (startIndex < 0 && startIndex + count === 0) {
+                items = this._data.slice(startIndex);
+            } else {
+                items = this._data.slice(startIndex, startIndex + count);
+            }
+
             resolve({
-                items: [],
-                total: 0
+                items,
+                total: this.length()
             });
         });
     }
