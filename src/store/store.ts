@@ -3,6 +3,15 @@
  */
 import { Hobby } from '@models';
 
+type StoreResponse = {
+    items: Hobby[];
+    total: number;
+};
+
+type StoreResolve = {
+    (response: StoreResponse): void;
+};
+
 export class Store {
     private _data: Hobby[] = [];
 
@@ -17,6 +26,15 @@ export class Store {
         this._data = this._data.filter(
             (hobby: Hobby) => hobby.id !== id
         );
+    }
+
+    public get(): Promise<StoreResponse> {
+        return new Promise((resolve: StoreResolve): void => {
+            resolve({
+                items: [],
+                total: 0
+            });
+        });
     }
 
     public getAll(): Hobby[] {

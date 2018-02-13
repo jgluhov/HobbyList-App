@@ -66,4 +66,12 @@ describe('Store: Spec', () => {
             });
         });
     });
+
+    describe('#get()', () => {
+        describe('when we call get method', () => {
+            it('should return PromiseLike object', () => {
+                expect(store.get()).toEqual(jasmine.any(Promise));
+            });
+        });
+    });
 });
