@@ -9,9 +9,21 @@ import * as sinon from 'sinon';
 describe('HobbyForm: Spec', () => {
     let sandbox: sinon.SinonSandbox;
     let hobbyForm: Components.HobbyForm;
+    let handleInputClickSpy: sinon.SinonSpy;
+    let handleSubmitClickSpy: sinon.SinonSpy;
+    let compIndex: number = 0;
 
-    beforeEach(() => {
+    beforeEach(async() => {
+        compIndex += 1;
         sandbox = sinon.sandbox.create();
+
+        fixture.set(`<hobby-form-${compIndex}></hobby-form-${compIndex}>`);
+        customElements.define(`hobby-form-${compIndex}`, class extends Components.HobbyForm {});
+        hobbyForm = <Components.HobbyForm>fixture.el.firstChild;
+        await customElements.whenDefined(`hobby-form-${compIndex}`);
+
+        handleInputClickSpy = sandbox.spy(hobbyForm, '_handleInputClick');
+        handleSubmitClickSpy = sandbox.spy(hobbyForm, '_handleSubmit');
     });
 
     afterEach(() => {
@@ -20,28 +32,24 @@ describe('HobbyForm: Spec', () => {
 
     describe('@attributes', () => {
         describe('when attr was not defined', () => {
-            beforeEach(async() => {
+            it('should set belonging to own by default', async() => {
                 fixture.set('<hobby-form-undef></hobby-form-undef>');
                 customElements.define('hobby-form-undef', class extends Components.HobbyForm {});
-                hobbyForm = <Components.HobbyForm>fixture.el.firstChild;
+                const hobbyFormUndef: Components.HobbyForm = <Components.HobbyForm>fixture.el.firstChild;
                 await customElements.whenDefined('hobby-form-undef');
-            });
 
-            it('should set belonging to own by default', () => {
-                expect(hobbyForm._state.belonging).toBe(Models.Belonging.OWN);
+                expect(hobbyFormUndef._state.belonging).toBe(Models.Belonging.OWN);
             });
         });
 
         describe('when attr was defined', () => {
-            beforeEach(async() => {
+            it('should set belonging correctly', async() => {
                 fixture.set('<hobby-form-def belonging="friend"></hobby-form-def>');
                 customElements.define('hobby-form-def', class extends Components.HobbyForm {});
-                hobbyForm = <Components.HobbyForm>fixture.el.firstChild;
+                const hobbyFormDef: Components.HobbyForm = <Components.HobbyForm>fixture.el.firstChild;
                 await customElements.whenDefined('hobby-form-def');
-            });
 
-            it('should set belonging correctly', () => {
-                expect(hobbyForm._state.belonging).toBe(Models.Belonging.FRIEND);
+                expect(hobbyFormDef._state.belonging).toBe(Models.Belonging.FRIEND);
             });
         });
 
@@ -54,14 +62,6 @@ describe('HobbyForm: Spec', () => {
     });
 
     describe('@event handlers', () => {
-        let handleInputClickSpy: sinon.SinonSpy;
-        let handleSubmitClickSpy: sinon.SinonSpy;
-
-        beforeEach(() => {
-            handleInputClickSpy = sandbox.spy(hobbyForm, '_handleInputClick');
-            handleSubmitClickSpy = sandbox.spy(hobbyForm, '_handleSubmit');
-        });
-
         describe('when we click on input', () => {
             it('should be called appropriate handler', () => {
                 hobbyForm.$input.click();
