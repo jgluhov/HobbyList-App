@@ -86,4 +86,119 @@ describe('HobbyForm: Spec', () => {
             });
         });
     });
+
+    describe('#_hiddenBtn()', () => {
+        beforeEach(() => {
+            hobbyForm.$btn.removeAttribute('hidden');
+        });
+
+        describe('when we call it with true param', () => {
+            it('should hide btn', () => {
+                hobbyForm._hiddenBtn(true);
+                expect(hobbyForm.$btn.hasAttribute('hidden')).toBeTruthy();
+            });
+        });
+
+        describe('when we call it with false param', () => {
+            it('should show btn', () => {
+                hobbyForm._hiddenBtn(false);
+                expect(hobbyForm.$btn.hasAttribute('hidden')).toBeFalsy();
+            });
+        });
+    });
+
+    describe('#_createHobby()', () => {
+        let eventSpy: sinon.SinonSpy;
+        beforeEach(() => {
+            eventSpy = sandbox.spy();
+            document.addEventListener('hobby:create', eventSpy);
+        });
+
+        describe('when we pass empty string', () => {
+            it('should not dispatch an event', () => {
+                hobbyForm._createHobby('');
+                expect(eventSpy.called).toBeFalsy();
+            });
+        });
+    });
+
+    describe('#_handleDocumentClick()', () => {
+        beforeEach(() => {
+            hobbyForm.$btn.removeAttribute('hidden');
+        });
+
+        describe('when input field is empty', () => {
+            it('should hide btn', () => {
+                hobbyForm.$input.value = '';
+
+                hobbyForm._handleDocumentClick(new MouseEvent('click'));
+
+                expect(hobbyForm.$btn.hasAttribute('hidden')).toBeTruthy();
+            });
+        });
+
+        describe('when input field is not empty', () => {
+            it('should not hide btn', () => {
+                hobbyForm.$input.value = 'some';
+
+                hobbyForm._handleDocumentClick(new MouseEvent('click'));
+
+                expect(hobbyForm.$btn.hasAttribute('hidden')).toBeFalsy();
+            });
+        });
+    });
+
+    describe('#_handleSubmit()', () => {
+        let createHobbySpy: sinon.SinonSpy;
+        let hiddenBtnSpy: sinon.SinonSpy;
+
+        beforeEach(() => {
+            createHobbySpy = sandbox.spy(hobbyForm, '_createHobby');
+            hiddenBtnSpy = sandbox.spy(hobbyForm, '_hiddenBtn');
+        });
+
+        describe('when input has incorrect text', () => {
+            it('should not call createHobby method', () => {
+                hobbyForm.$input.value = '123';
+
+                hobbyForm._handleSubmit(new MouseEvent('click'));
+
+                expect(createHobbySpy.called).toBeFalsy();
+            });
+        });
+
+        describe('when input has correct text', () => {
+            it('should call createHobby method', () => {
+                hobbyForm.$input.value = 'some';
+
+                hobbyForm._handleSubmit(new MouseEvent('click'));
+
+                expect(createHobbySpy.called).toBeTruthy();
+            });
+
+            it('should call createHobby method with value as a param', () => {
+                hobbyForm.$input.value = 'some';
+
+                hobbyForm._handleSubmit(new MouseEvent('click'));
+
+                expect(createHobbySpy.calledWith('some')).toBeTruthy();
+            });
+
+            it('should clear input value after', () => {
+                hobbyForm.$input.value = 'some';
+
+                hobbyForm._handleSubmit(new MouseEvent('click'));
+
+                expect(hobbyForm.$input.value).toBe('');
+            });
+
+            it('should hide btn', () => {
+                hobbyForm.$input.value = 'some';
+
+                hobbyForm._handleSubmit(new MouseEvent('click'));
+
+                expect(hobbyForm.$btn.hasAttribute('hidden')).toBeTruthy();
+            });
+        });
+    });
 });

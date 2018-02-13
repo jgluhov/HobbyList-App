@@ -91,6 +91,10 @@ export class HobbyForm extends HTMLElement {
     }
 
     public _createHobby(text: string): void {
+        if (!text) {
+            return;
+        }
+
         const hobby: Models.Hobby = new Models.Hobby(text, this._state.belonging);
         Utils.dispatchEvent<Models.Hobby>('hobby:create', hobby);
     }
