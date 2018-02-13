@@ -8,8 +8,8 @@ type StoreResponse = {
     total: number;
 };
 
-type StoreResolve = {
-    (response: StoreResponse): void;
+type PromiseResolve<T> = {
+    (value?: T): void;
 };
 
 export class Store {
@@ -29,7 +29,7 @@ export class Store {
     }
 
     public get(): Promise<StoreResponse> {
-        return new Promise((resolve: StoreResolve): void => {
+        return new Promise((resolve: PromiseResolve<StoreResponse>): void => {
             resolve({
                 items: [],
                 total: 0
