@@ -99,11 +99,7 @@ export class HobbyForm extends HTMLElement {
         Utils.dispatchEvent<Models.Hobby>('hobby:create', hobby);
     }
 
-    public _hiddenBtn(hide: boolean): void {
-        if (hide) {
-            this.$btn.setAttribute('hidden', '');
-        } else {
-            this.$btn.removeAttribute('hidden');
-        }
+    public _hiddenBtn(hidden: boolean): void {
+        this.$btn.hidden = hidden;
     }
 }
