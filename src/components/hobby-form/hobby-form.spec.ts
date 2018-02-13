@@ -4,9 +4,19 @@
 import * as Components from '@components';
 import * as Models from '@models';
 import 'babel-polyfill';
+import * as sinon from 'sinon';
 
 describe('HobbyForm: Spec', () => {
+    let sandbox: sinon.SinonSandbox;
     let hobbyForm: Components.HobbyForm;
+
+    beforeEach(() => {
+        sandbox = sinon.sandbox.create();
+    });
+
+    afterEach(() => {
+        sandbox.restore();
+    });
 
     describe('@attributes', () => {
         describe('when attr was not defined', () => {
@@ -39,6 +49,40 @@ describe('HobbyForm: Spec', () => {
             it('should contain attr name', () => {
                 expect(Components.HobbyForm.observedAttributes)
                     .toContain('belonging');
+            });
+        });
+    });
+
+    describe('@event handlers', () => {
+        let handleInputClickSpy: sinon.SinonSpy;
+        let handleSubmitClickSpy: sinon.SinonSpy;
+
+        beforeEach(() => {
+            handleInputClickSpy = sandbox.spy(hobbyForm, '_handleInputClick');
+            handleSubmitClickSpy = sandbox.spy(hobbyForm, '_handleSubmit');
+        });
+
+        describe('when we click on input', () => {
+            it('should be called appropriate handler', () => {
+                hobbyForm.$input.click();
+                expect(handleInputClickSpy.calledOnce).toBeTruthy();
+            });
+
+            it('should not be called btn handler', () => {
+                hobbyForm.$input.click();
+                expect(handleSubmitClickSpy.called).toBeFalsy();
+            });
+        });
+
+        describe('when we click on button', () => {
+            it('should be called appropriate handler', () => {
+                hobbyForm.$btn.click();
+                expect(handleSubmitClickSpy.calledOnce).toBeTruthy();
+            });
+
+            it('should not be called input handler', () => {
+                hobbyForm.$btn.click();
+                expect(handleInputClickSpy.called).toBeFalsy();
             });
         });
     });

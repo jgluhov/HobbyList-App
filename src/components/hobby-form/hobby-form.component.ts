@@ -14,6 +14,7 @@ type HobbyFormState = {
 export class HobbyForm extends HTMLElement {
     public _shadowRoot: ShadowRoot;
     public _state: HobbyFormState = {};
+    public $doc: HTMLElement = document.documentElement;
     public $form: HTMLFormElement;
     public $btn: HTMLButtonElement;
     public $input: HTMLInputElement;
@@ -54,7 +55,7 @@ export class HobbyForm extends HTMLElement {
     }
 
     public _addEventListeners(): void {
-        document.addEventListener('click', this._handleDocumentClick);
+        this.$doc.addEventListener('click', this._handleDocumentClick);
         this.$form.addEventListener('click', this._handleClick);
     }
 
