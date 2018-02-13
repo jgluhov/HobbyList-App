@@ -1,7 +1,7 @@
 /**
  * HobbyListApp | Store
  */
-import { Hobby } from "@models";
+import { Hobby } from '@models';
 
 class Store<T> {
     private data: T[] = [];
