@@ -17,7 +17,7 @@ async function main(): Promise<void> {
 }
 
 function handleHobbyCreate(e: CustomEvent): void {
-    store.add(e.detail.data);
+    store.append(e.detail.data);
 }
 
 window.addEventListener('load', main);

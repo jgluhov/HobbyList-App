@@ -3,12 +3,29 @@
  */
 import { Hobby } from '@models';
 
-class Store<T> {
-    private data: T[] = [];
+export class Store {
+    private _data: Hobby[] = [];
 
-    public add(hobby: T): void {
-        this.data.push(hobby);
+    public append(hobby: Hobby): void {
+        this._data = [
+            ...this._data,
+            hobby
+        ];
+    }
+
+    public remove(id: string): void {
+        this._data = this._data.filter(
+            (hobby: Hobby) => hobby.id !== id
+        );
+    }
+
+    public getAll(): Hobby[] {
+        return this._data;
+    }
+
+    public length(): number {
+        return this._data.length;
     }
 }
 
-export const store: Store<Hobby> = new Store();
+export const store: Store = new Store();

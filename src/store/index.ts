@@ -1,4 +1,4 @@
 /**
  * HobbyListApp | Store Root
  */
-export { store } from './store';
+export { store, Store } from './store';
