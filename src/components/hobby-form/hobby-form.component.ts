@@ -44,6 +44,8 @@ export class HobbyForm extends HTMLElement {
     }
 
     public connectedCallback(): void {
+        this._state.belonging = this._state.belonging || Models.Belonging.OWN;
+
         this.$form = this._shadowRoot.querySelector('[name="hobby-form"]');
         this.$btn = this.$form.querySelector('.form__btn');
         this.$input = this.$form.querySelector('.form__input');

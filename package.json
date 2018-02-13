@@ -24,6 +24,7 @@
     "@babel/preset-stage-3": "^7.0.0-beta.39",
     "@babel/preset-typescript": "^7.0.0-beta.39",
     "@types/jasmine": "^2.8.6",
+    "@types/karma-fixture": "^0.2.3",
     "@types/sinon": "^4.1.3",
     "babel-loader": "^8.0.0-beta.0",
     "babel-plugin-transform-custom-element-classes": "^0.1.0",

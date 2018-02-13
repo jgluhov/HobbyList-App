@@ -1,4 +1,4 @@
 /**
  * HobbyForm Models
  */
-export { Hobby } from './hobby.model';
+export { Belonging, Hobby } from './hobby.model';
