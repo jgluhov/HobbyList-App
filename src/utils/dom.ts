@@ -2,6 +2,10 @@
  * HobbyList Dom Utils
  */
 
+interface IExCustomEventInit extends CustomEventInit {
+    composed: boolean;
+}
+
 export function createShadowRoot(style: string, template: string): DocumentFragment {
     const templateEl: HTMLTemplateElement = document.createElement('template');
     const styleEl: HTMLStyleElement = document.createElement('style');
@@ -17,11 +21,11 @@ export function createShadowRoot(style: string, template: string): DocumentFragm
 }
 
 export function dispatchEvent<T>(eventName: string, data: T): void {
-    document.dispatchEvent(new CustomEvent(eventName, {
-        detail: {
-            data
-        },
+    const customEventInit: IExCustomEventInit = {
+        detail: { data },
         bubbles: true,
         composed: true
-    }));
+    };
+
+    document.dispatchEvent(new CustomEvent(eventName, customEventInit));
 }
