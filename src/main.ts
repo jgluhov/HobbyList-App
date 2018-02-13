@@ -3,6 +3,7 @@
  */
 import { HobbyForm, HobbyList } from '@components';
 import { Hobby } from '@models';
+import { store } from '@store';
 import './styles/main.scss';
 
 async function main(): Promise<void> {
@@ -16,7 +17,7 @@ async function main(): Promise<void> {
 }
 
 function handleHobbyCreate(e: CustomEvent): void {
-
+    store.add(e.detail.data);
 }
 
 window.addEventListener('load', main);
