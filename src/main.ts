@@ -1,19 +1,21 @@
 /**
  * HobbyForm Main
  */
-import { HobbyForm } from './components/hobby-form';
+import { HobbyForm, HobbyList } from '@components';
 import { Hobby } from '@models';
 import './styles/main.scss';
 
 async function main(): Promise<void> {
     customElements.define('hobby-form', HobbyForm);
+    customElements.define('hobby-list', HobbyList);
 
     await customElements.whenDefined('hobby-form');
+    await customElements.whenDefined('hobby-list');
 
     document.addEventListener('hobby:create', handleHobbyCreate);
 }
 
-function handleHobbyCreate(hobby: Hobby): void {
+function handleHobbyCreate(e: CustomEvent): void {
 
 }
 

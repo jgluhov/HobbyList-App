@@ -1,0 +1,86 @@
+@import '~@styles/variables.scss';
+@import '~@styles/mixins.scss';
+
+:host {
+    all: initial;
+    display: block;
+    contain: content;
+    font-family: $font-family-base;
+}
+
+:host .hobby-list__content {
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    padding-bottom: 5px;
+    
+    transition: height 100ms ease-in-out;
+}
+
+// :host .hobby-list__icon {
+//     width: $hobby-list-icon-size;
+//     margin-right: $hobby-list-icon-indent;
+// }
+
+// :host .hobby-list__item {
+//     display: flex;
+//     align-items: center;
+//     font-size: $hobby-list-item-font-size;
+//     color: $hobby-list-item-color;
+//     line-height: $hobby-list-item-line-height;
+//     opacity: 1;
+    
+//     &:hover {
+//         @include hightlight;
+//     }
+// }
+
+// :host .hobby-list--own {
+//     .hobby-list__item {
+//         &:hover {
+//             .hobby-list__icon {
+//                 @include icon('close', $hobby-list-icon-size);
+//             }
+//         }
+//     }
+// }
+
+// :host .hobby-list--friend {
+//     .hobby-list__item {
+//         &:not(.hobby-list__item--selected) {
+//             &:hover {
+//                 .hobby-list__icon {
+//                     @include icon('close', $hobby-list-icon-size, 45deg);
+//                 }
+//             }
+//         }
+
+//         &.hobby-list__item--selected {
+//             .hobby-list__icon {
+//                 @include icon('ok', $hobby-list-icon-size, 0deg);
+//             }
+
+//             opacity: 0;
+//             transition-property: opacity;
+//             transition-duration: $hobby-list-item-duration;
+//         }
+//     }
+// }
+
+// :host .hobby-list__handler {
+//     font-size: $expander-font-size;
+//     line-height: $expander-line-height;
+
+//     &:not(.hobby-list__handler--empty) {
+//         color: $expander-color;
+//         &:hover {
+//             @include hightlight;
+//         }
+//     }
+
+//     &.hobby-list__handler--hidden {
+//         display: none;
+//     }
+// }
