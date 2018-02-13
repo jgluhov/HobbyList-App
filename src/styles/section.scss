@@ -7,8 +7,7 @@
     }
 
     .section__line {
-        margin-top: $section__line-margin-top;
-        margin-bottom: $section__line-margin-bottom;
+        margin: 5px 0 10px 0;
     }
 
     .section__subheader {
@@ -18,7 +17,7 @@
         border-bottom: none;
         padding-left: 0;
         font-size: $section__subheader-font-size;
-        border-top-width: $section__subheader_border-width;
+        border-top-width: 1px;
         color: $section__subheader_color;
         border-color: $section__subheader_border-color;
     }
