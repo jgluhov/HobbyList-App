@@ -13,11 +13,11 @@ async function main(): Promise<void> {
     await customElements.whenDefined('hobby-form');
     await customElements.whenDefined('hobby-list');
 
-    document.addEventListener('hobby:create', handleHobbyCreate);
+    addEventListener('hobby:create', handleHobbyCreate);
 }
 
 function handleHobbyCreate(e: CustomEvent): void {
     store.append(e.detail.data);
 }
 
-window.addEventListener('load', main);
+addEventListener('load', main);
