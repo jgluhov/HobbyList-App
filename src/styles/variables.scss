@@ -1,5 +1,6 @@
 // Base
 $font-size-base: 14px;
+$font-size-small: 13px;
 $font-family-base: Arial, Helvetica, sans-serif;
 
 // Colors
@@ -24,3 +25,7 @@ $hobby-form__btn-color: rgb(70, 69, 69);
 
 // Hobby List
 $hobby-list__item-color: $color-orange;
+$hobby-list__icon-size: 10px;
+
+// Media queries
+$mq-retina: "(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)";

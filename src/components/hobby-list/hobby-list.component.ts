@@ -18,7 +18,7 @@ type HobbyListState = {
 export class HobbyList extends HTMLElement {
     public _state: HobbyListState = {};
     public _shadowRoot: ShadowRoot;
-    public $hobbyList: HTMLDivElement;
+    public $listContent: HTMLDivElement;
 
     constructor() {
         super();
@@ -46,12 +46,17 @@ export class HobbyList extends HTMLElement {
     }
 
     public connectedCallback(): void {
+        this.initiate();
+    }
+
+    public async initiate(): Promise<void> {
         this._state.belonging = this.getAttribute('belonging') || Models.Belonging.OWN;
         this._state.threshold = +this.getAttribute('threshold') || 4;
 
-        this.$hobbyList = this._shadowRoot.querySelector('.hobby-list');
+        this.$listContent = this._shadowRoot.querySelector('.hobby-list__content');
 
-        this.loadHobbies();
+        await this.loadHobbies();
+
         this.render();
     }
 
@@ -60,15 +65,19 @@ export class HobbyList extends HTMLElement {
 
         const response: Store.StoreResponse = await Store.store
             .get(this._state.renderedIndex, this._state.threshold);
-
-        this._setLoading(false);
+        setTimeout(
+            () => {
+                this._setLoading(false);
+            },
+            500
+        );
     }
 
     public _setLoading(loading: boolean): void {
         this._state.loading = loading;
 
         const fn: string = loading ? 'add' : 'remove';
-        this.$hobbyList.classList[fn]('hobby-list--loading');
+        this.$listContent.classList[fn]('hobby-list__content--loading');
     }
 
     public render = (): void => {

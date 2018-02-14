@@ -47,7 +47,7 @@ describe('HobbyList: Spec', () => {
     describe('#_setLoading()', () => {
         describe('when we pass true param', () => {
             beforeEach(() => {
-                hobbyList.$hobbyList.classList.remove('hobby-list--loading');
+                hobbyList.$listContent.classList.remove('hobby-list--loading');
                 hobbyList._setLoading(true);
             });
 
@@ -56,14 +56,14 @@ describe('HobbyList: Spec', () => {
             });
 
             it('should add class loading modificator', () => {
-                expect(hobbyList.$hobbyList.classList.contains('hobby-list--loading'))
+                expect(hobbyList.$listContent.classList.contains('hobby-list--loading'))
                     .toBeTruthy();
             });
         });
 
         describe('when we pass true param', () => {
             beforeEach(() => {
-                hobbyList.$hobbyList.classList.add('hobby-list--loading');
+                hobbyList.$listContent.classList.add('hobby-list__content--loading');
                 hobbyList._setLoading(false);
             });
 
@@ -72,7 +72,7 @@ describe('HobbyList: Spec', () => {
             });
 
             it('should remove class loading modificator', () => {
-                expect(hobbyList.$hobbyList.classList.contains('hobby-list--loading'))
+                expect(hobbyList.$listContent.classList.contains('hobby-list__content--loading'))
                     .toBeFalsy();
             });
         });

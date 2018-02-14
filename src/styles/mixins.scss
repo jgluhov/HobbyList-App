@@ -26,14 +26,14 @@
 }
 
 @mixin icon($name, $size, $angle: 0deg) {
-    background-image: url("~Assets/#{$name}.png");
+    background-image: url("~@assets/#{$name}.png");
     background-size: 10px 10px;
     background-repeat: no-repeat;
 
     @include square($size);
 
     @include hd-screen {                
-        background-image: url("~Assets/#{$name}@2x.png")
+        background-image: url("~@assets/#{$name}@2x.png")
     }
 
     transform: rotate($angle);
