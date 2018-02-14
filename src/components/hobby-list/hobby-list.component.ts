@@ -12,6 +12,7 @@ type HobbyListState = {
     threshold?: number;
     renderedIndex?: number;
     belonging?: string;
+    loading?: boolean;
 };
 
 export class HobbyList extends HTMLElement {
@@ -46,16 +47,22 @@ export class HobbyList extends HTMLElement {
         this._state.belonging = this.getAttribute('belonging') || Models.Belonging.OWN;
         this._state.threshold = +this.getAttribute('threshold') || 4;
 
-        this.loadHobbies().then(this.render);
+        this.loadHobbies();
+        this.render();
     }
 
-    public loadHobbies(): Promise<Store.StoreResponse> {
-        return Store.store
+    public async loadHobbies(): Promise<void> {
+        this.setLoading(true);
+        const response: Store.StoreResponse = await Store.store
             .get(this._state.renderedIndex, this._state.threshold);
-
+        this.setLoading(false);
     }
 
-    public render = (response: Store.StoreResponse): void => {
-        console.log(response);
+    public setLoading(loading: boolean): void {
+        this._state.loading = loading;
+    }
+
+    public render = (): void => {
+
     }
  }

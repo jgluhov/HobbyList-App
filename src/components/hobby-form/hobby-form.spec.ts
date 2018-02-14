@@ -3,7 +3,6 @@
  */
 import * as Components from '@components';
 import * as Models from '@models';
-import 'babel-polyfill';
 import * as sinon from 'sinon';
 
 describe('HobbyForm: Spec', () => {
