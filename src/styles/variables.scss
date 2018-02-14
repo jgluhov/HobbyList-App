@@ -2,6 +2,9 @@
 $font-size-base: 14px;
 $font-family-base: Arial, Helvetica, sans-serif;
 
+// Colors
+$color-orange: #fba56d;
+
 // Page
 $page-width: 960px;
 
@@ -18,3 +21,6 @@ $hobby-form__input-width: 220px;
 $hobby-form__input-border-color: lightgray;
 
 $hobby-form__btn-color: rgb(70, 69, 69);
+
+// Hobby List
+$hobby-list__item-color: $color-orange;

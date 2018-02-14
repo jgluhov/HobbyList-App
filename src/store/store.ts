@@ -30,13 +30,7 @@ export class Store {
 
     public get(startIndex: number = 0, count: number = 0): Promise<StoreResponse> {
         return new Promise((resolve: PromiseResolve<StoreResponse>): void => {
-            let items: Hobby[];
-
-            if (startIndex < 0 && startIndex + count === 0) {
-                items = this._data.slice(startIndex);
-            } else {
-                items = this._data.slice(startIndex, startIndex + count);
-            }
+            const items: Hobby[] = this._data.slice(startIndex, startIndex + count);
 
             resolve({
                 items,

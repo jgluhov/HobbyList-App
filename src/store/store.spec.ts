@@ -116,41 +116,11 @@ describe('Store: Spec', () => {
                 });
             });
 
-            describe('when startIndex is equal to -2 and count equal to 2', () => {
-                it('should return correct response', async() => {
-                    const response: StoreResponse = await store.get(-2, 2);
-                    expect(response).toEqual({
-                        items: [hobby5, hobby6],
-                        total: 6
-                    });
-                });
-            });
-
-            describe('when startIndex is equal to -4 and count equal to 2', () => {
-                it('should return correct response', async() => {
-                    const response: StoreResponse = await store.get(-4, 2);
-                    expect(response).toEqual({
-                        items: [hobby3, hobby4],
-                        total: 6
-                    });
-                });
-            });
-
             describe('when startIndex is equal to -4 and count equal to -1', () => {
                 it('should return correct response', async() => {
-                    const response: StoreResponse = await store.get(-4, -1);
+                    const response: StoreResponse = await store.get(4, 1);
                     expect(response).toEqual({
-                        items: [],
-                        total: 6
-                    });
-                });
-            });
-
-            describe('when startIndex is equal to 10 and count equal to -1', () => {
-                it('should return correct response', async() => {
-                    const response: StoreResponse = await store.get(10, -1);
-                    expect(response).toEqual({
-                        items: [],
+                        items: [hobby5],
                         total: 6
                     });
                 });
@@ -162,18 +132,6 @@ describe('Store: Spec', () => {
                     expect(response).toEqual({
                         items: [],
                         total: 6
-                    });
-                });
-            });
-
-            describe('when we remove hobby-4', () => {
-                it('should return correct response', async() => {
-                    store.remove(hobby4.id);
-
-                    const response: StoreResponse = await store.get(-3, 1);
-                    expect(response).toEqual({
-                        items: [hobby3],
-                        total: 5
                     });
                 });
             });

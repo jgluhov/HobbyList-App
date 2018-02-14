@@ -18,6 +18,8 @@ type HobbyListState = {
 export class HobbyList extends HTMLElement {
     public _state: HobbyListState = {};
     public _shadowRoot: ShadowRoot;
+    public $hobbyList: HTMLDivElement;
+
     constructor() {
         super();
 
@@ -47,19 +49,26 @@ export class HobbyList extends HTMLElement {
         this._state.belonging = this.getAttribute('belonging') || Models.Belonging.OWN;
         this._state.threshold = +this.getAttribute('threshold') || 4;
 
+        this.$hobbyList = this._shadowRoot.querySelector('.hobby-list');
+
         this.loadHobbies();
         this.render();
     }
 
     public async loadHobbies(): Promise<void> {
-        this.setLoading(true);
+        this._setLoading(true);
+
         const response: Store.StoreResponse = await Store.store
             .get(this._state.renderedIndex, this._state.threshold);
-        this.setLoading(false);
+
+        this._setLoading(false);
     }
 
-    public setLoading(loading: boolean): void {
+    public _setLoading(loading: boolean): void {
         this._state.loading = loading;
+
+        const fn: string = loading ? 'add' : 'remove';
+        this.$hobbyList.classList[fn]('hobby-list--loading');
     }
 
     public render = (): void => {
