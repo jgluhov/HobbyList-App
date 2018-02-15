@@ -5,6 +5,8 @@ import * as Models from '@models';
 import * as Store from '@store';
 import * as Utils from '@utils';
 
+import { HobbyListService } from './hobby-list.service';
+
 import styles from './hobby-list.styles.scss';
 import template from './hobby-list.template.html';
 
@@ -13,7 +15,7 @@ type HobbyListState = {
     renderedIndex: number;
     belonging: string;
     loading: boolean;
-    collapsed: boolean;
+    limit: number;
     items: Models.Hobby[];
     total: number;
 };
@@ -22,6 +24,7 @@ export class HobbyList extends HTMLElement {
     public _state: HobbyListState;
     public _shadowRoot: ShadowRoot;
     public $listContent: HTMLDivElement;
+    public service: HobbyListService = new HobbyListService();
 
     constructor() {
         super();
@@ -59,7 +62,7 @@ export class HobbyList extends HTMLElement {
             belonging,
             renderedIndex: 0,
             loading: false,
-            collapsed: false,
+            limit: threshold,
             items: [],
             total: 0
         };
@@ -101,9 +104,14 @@ export class HobbyList extends HTMLElement {
 
     public render(): void {
         this.renderContent();
+        this.renderFooter();
     }
 
     public renderContent(): void {
+        console.log(this._state);
+    }
 
+    public renderFooter(): void {
+        console.log(this._state);
     }
  }

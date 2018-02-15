@@ -32,14 +32,24 @@ describe('HobbyList: Spec', () => {
         });
 
         describe('when attrs were not defined', () => {
-            it('should set attrs to default values', async() => {
-                fixture.set('<hobby-list-undef></hobby-list-undef>');
-                customElements.define('hobby-list-undef', class extends Components.HobbyList {});
-                const hobbyListUndef: Components.HobbyList = <Components.HobbyList>fixture.el.firstChild;
-                await customElements.whenDefined('hobby-list-undef');
+            let hobbyListUndef: Components.HobbyList;
+            beforeEach(async() => {
+                fixture.set(`<hobby-list-undef-${compIndex}></hobby-list-undef-${compIndex}>`);
+                customElements.define(`hobby-list-undef-${compIndex}`, class extends Components.HobbyList {});
+                hobbyListUndef = <Components.HobbyList>fixture.el.firstChild;
+                await customElements.whenDefined(`hobby-list-undef-${compIndex}`);
+            });
 
+            it('should set belonging to default value', () => {
                 expect(hobbyListUndef._state.belonging).toBe(Models.Belonging.OWN);
+            });
+
+            it('shoud set threshold to default value', () => {
                 expect(hobbyListUndef._state.threshold).toBe(4);
+            });
+
+            it('shoud set limit to be equal to threshold default value', () => {
+                expect(hobbyListUndef._state.limit).toBe(4);
             });
         });
     });
