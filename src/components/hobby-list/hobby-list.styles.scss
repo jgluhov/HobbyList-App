@@ -19,10 +19,10 @@
     transition: all 100ms ease;
 }
 
-// :host .hobby-list__icon {
-//     width: $hobby-list-icon-size;
-//     margin-right: $hobby-list-icon-indent;
-// }
+:host .hobby-list__icon {
+    width: $hobby-list__icon-size;
+    margin-right: $hobby-list__icon-size / 2;
+}
 
 :host .hobby-list__item {
     font-size: $font-size-small;
@@ -69,18 +69,21 @@
 //     }
 // }
 
-// :host .hobby-list__handler {
-//     font-size: $expander-font-size;
-//     line-height: $expander-line-height;
+:host .hobby-list__footer {
+    font-size: $font-size-small;
+    line-height: 25px;
+    opacity: 1;
+    transition: opacity 200ms ease-in;
 
-//     &:not(.hobby-list__handler--empty) {
-//         color: $expander-color;
-//         &:hover {
-//             @include hightlight;
-//         }
-//     }
+    &:not(.hobby-list__handler--empty) {
+        color: $hobby-list__footer-color;
+        &:hover {
+            @include hightlight;
+        }
+    }
 
-//     &.hobby-list__handler--hidden {
-//         display: none;
-//     }
-// }
+    &[hidden] {
+        opacity: 0;
+        display: inline-block;
+    }
+}

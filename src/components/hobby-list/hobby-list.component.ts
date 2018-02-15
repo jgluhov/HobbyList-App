@@ -69,6 +69,7 @@ export class HobbyList extends HTMLElement {
             total: 0
         };
 
+        this._setListType();
         await this.loadHobbies();
         this._render();
     }
@@ -98,6 +99,10 @@ export class HobbyList extends HTMLElement {
 
         const fn: string = loading ? 'add' : 'remove';
         this.$listContent.classList[fn](HobbyListConstants.CONTENT_LOADING_CLASS);
+    }
+
+    public _setListType(): void {
+        this.$listContent.classList.add(`hobby-list--${this._state.belonging}`);
     }
 
     public _render(): void {
