@@ -110,14 +110,18 @@ export class HobbyList extends HTMLElement {
     }
 
     public _renderFooter(): void {
-
         if (!this._state.total) {
             this._hiddenFooter(false);
             this._setFooterText('Список пуст');
-        }    
+        }
+        
+        if (this._state.total && this._state.total - this._state.limit <= 0) {
+            this._hiddenFooter(true);
+            this._setFooterText();
+        }
     }
 
-    public _setFooterText(text: string): void {
+    public _setFooterText(text: string = ''): void {
         this.$listFooter.textContent = text;
     }
 

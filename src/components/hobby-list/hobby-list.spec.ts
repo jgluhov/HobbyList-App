@@ -1,12 +1,32 @@
 /**
  * HobbyListApp | HobbyList Spec
  */
+import { Belonging, Hobby } from '@models';
 import * as Components from '@components';
 import * as Models from '@models';
 
 describe('HobbyList: Spec', () => {
     let hobbyList: Components.HobbyList;
     let compIndex: number = 0;
+    let ownHobby1: Hobby;
+    let ownHobby2: Hobby;
+    let ownHobby3: Hobby;
+    let ownHobby4: Hobby;
+    let ownHobby5: Hobby;
+    let ownHobby6: Hobby;
+    let friendHobby1: Hobby;
+    let friendHobby2: Hobby;
+
+    beforeEach(() => {
+        ownHobby1 = new Hobby('own-hobby-1');
+        ownHobby2 = new Hobby('own-hobby-2');
+        ownHobby3 = new Hobby('own-hobby-3');
+        ownHobby4 = new Hobby('own-hobby-4');
+        ownHobby5 = new Hobby('own-hobby-5');
+        ownHobby6 = new Hobby('own-hobby-6');
+        friendHobby1 = new Hobby('friend-hobby-1', Belonging.FRIEND);
+        friendHobby2 = new Hobby('friend-hobby-2', Belonging.FRIEND);
+    })
 
     beforeEach(async() => {
         compIndex += 1;
@@ -104,6 +124,26 @@ describe('HobbyList: Spec', () => {
 
             it('should not hide footer content', () => {
                 expect(hobbyList.$listFooter.hasAttribute('hidden')).toBeFalsy();
+            })
+        });
+
+        describe('when total items is less then hobby list limit', () => {
+            beforeEach(() => {
+                hobbyList.$listFooter.setAttribute('hidden', '');
+                
+                hobbyList._state.threshold = 4;
+                hobbyList._state.limit = 4;
+                hobbyList._state.items = [
+                    ownHobby1,
+                    ownHobby2,
+                    ownHobby3,
+                ];
+                hobbyList._state.total = 3;
+                hobbyList._renderFooter();
+            });
+
+            it('should not render footer', () => {
+                expect(hobbyList.$listFooter.textContent).toBe('');
             })
         });
     });
