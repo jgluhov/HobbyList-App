@@ -24,6 +24,7 @@ export class HobbyList extends HTMLElement {
     public _state: HobbyListState;
     public _shadowRoot: ShadowRoot;
     public $listContent: HTMLDivElement;
+    public $listFooter: HTMLDialogElement;
     public service: HobbyListService = new HobbyListService();
 
     constructor() {
@@ -56,6 +57,7 @@ export class HobbyList extends HTMLElement {
         const threshold: number = +this.getAttribute('threshold') || 4;
 
         this.$listContent = this._shadowRoot.querySelector('.hobby-list__content');
+        this.$listFooter = this._shadowRoot.querySelector('.hobby-list__footer');
 
         this._state = {
             threshold,
@@ -68,7 +70,7 @@ export class HobbyList extends HTMLElement {
         };
 
         await this.loadHobbies();
-        this.render();
+        this._render();
     }
 
     public async loadHobbies(): Promise<void> {
@@ -98,16 +100,28 @@ export class HobbyList extends HTMLElement {
         this.$listContent.classList[fn]('hobby-list__content--loading');
     }
 
-    public render(): void {
-        this.renderContent();
-        this.renderFooter();
+    public _render(): void {
+        this._renderContent();
+        this._renderFooter();
     }
 
-    public renderContent(): void {
+    public _renderContent(): void {
         console.log(this._state);
     }
 
-    public renderFooter(): void {
-        console.log(this._state);
+    public _renderFooter(): void {
+
+        if (!this._state.total) {
+            this._hiddenFooter(false);
+            this._setFooterText('Список пуст');
+        }    
+    }
+
+    public _setFooterText(text: string): void {
+        this.$listFooter.textContent = text;
+    }
+
+    public _hiddenFooter(hidden: boolean): void {
+        this.$listFooter.hidden = hidden;
     }
  }

@@ -87,4 +87,24 @@ describe('HobbyList: Spec', () => {
             });
         });
     });
+
+    describe('#_renderFooter()', () => {
+        describe('when there are no hobbies in store', () => {
+            beforeEach(() => {
+                hobbyList.$listFooter.setAttribute('hidden', '');
+                hobbyList._state.items = [];
+                hobbyList._state.total = 0;
+                
+                hobbyList._renderFooter();
+            });
+
+            it('should set correct text content at footer', () => {
+                expect(hobbyList.$listFooter.textContent).toBe('Список пуст');
+            });
+
+            it('should not hide footer content', () => {
+                expect(hobbyList.$listFooter.hasAttribute('hidden')).toBeFalsy();
+            })
+        });
+    });
 });
