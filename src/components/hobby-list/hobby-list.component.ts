@@ -9,14 +9,17 @@ import styles from './hobby-list.styles.scss';
 import template from './hobby-list.template.html';
 
 type HobbyListState = {
-    threshold?: number;
-    renderedIndex?: number;
-    belonging?: string;
-    loading?: boolean;
+    threshold: number;
+    renderedIndex: number;
+    belonging: string;
+    loading: boolean;
+    collapsed: boolean;
+    items: Models.Hobby[];
+    total: number;
 };
 
 export class HobbyList extends HTMLElement {
-    public _state: HobbyListState = {};
+    public _state: HobbyListState;
     public _shadowRoot: ShadowRoot;
     public $listContent: HTMLDivElement;
 
@@ -41,32 +44,52 @@ export class HobbyList extends HTMLElement {
         ];
     }
 
-    public attributeChangedCallback(attrName: string, oldVal: string, newVal: string): void {
-        this._state[attrName] = newVal;
-    }
-
     public connectedCallback(): void {
         this.initiate();
     }
 
     public async initiate(): Promise<void> {
-        this._state.belonging = this.getAttribute('belonging') || Models.Belonging.OWN;
-        this._state.threshold = +this.getAttribute('threshold') || 4;
+        const belonging: string = this.getAttribute('belonging') || Models.Belonging.OWN;
+        const threshold: number = +this.getAttribute('threshold') || 4;
 
         this.$listContent = this._shadowRoot.querySelector('.hobby-list__content');
 
-        await this.loadHobbies();
+        this._state = {
+            threshold,
+            belonging,
+            renderedIndex: 0,
+            loading: false,
+            collapsed: false,
+            items: [],
+            total: 0
+        };
 
+        await this.update();
         this.render();
     }
 
-    public async loadHobbies(): Promise<void> {
+    public async update(): Promise<void> {
         this._setLoading(true);
 
-        const response: Store.StoreResponse = await Store.store
-            .get(this._state.renderedIndex, this._state.threshold);
+        const response: Store.StoreResponse = await this.loadHobbies(
+            this._state.renderedIndex,
+            this._state.threshold
+        );
+
+        this._state = {
+            ...this._state,
+            items: [
+                ...this._state.items,
+                ...response.items
+            ],
+            total: response.total
+        };
 
         this._setLoading(false);
+    }
+
+    public loadHobbies(startIndex: number, count: number): Promise<Store.StoreResponse> {
+        return Store.store.get(startIndex, count);
     }
 
     public _setLoading(loading: boolean): void {
@@ -76,7 +99,11 @@ export class HobbyList extends HTMLElement {
         this.$listContent.classList[fn]('hobby-list__content--loading');
     }
 
-    public render = (): void => {
+    public render(): void {
+        this.renderContent();
+    }
+
+    public renderContent(): void {
 
     }
  }
