@@ -112,7 +112,8 @@ describe('HobbyList: Spec', () => {
         describe('when there are no hobbies in store', () => {
             beforeEach(() => {
                 hobbyList.$listFooter.setAttribute('hidden', '');
-                hobbyList._state.items = [];
+                hobbyList.$listFooter.textContent = 'some text';
+                hobbyList._state.threshold = 4;
                 hobbyList._state.total = 0;
                 
                 hobbyList._renderFooter();
@@ -127,24 +128,85 @@ describe('HobbyList: Spec', () => {
             })
         });
 
-        describe('when total items is less then hobby list limit', () => {
+        describe('when total items is less then threshold', () => {
             beforeEach(() => {
-                hobbyList.$listFooter.setAttribute('hidden', '');
+                hobbyList.$listFooter.removeAttribute('hidden');
+                hobbyList.$listFooter.textContent = 'some text';
                 
                 hobbyList._state.threshold = 4;
-                hobbyList._state.limit = 4;
-                hobbyList._state.items = [
-                    ownHobby1,
-                    ownHobby2,
-                    ownHobby3,
-                ];
                 hobbyList._state.total = 3;
                 hobbyList._renderFooter();
             });
 
-            it('should not render footer', () => {
+            it('should set clear the footers text content', () => {
                 expect(hobbyList.$listFooter.textContent).toBe('');
-            })
+            });
+
+            it('should add hidden attribute to the footer', () => {
+                expect(hobbyList.$listFooter.hasAttribute('hidden')).toBeTruthy();
+            });
+        });
+
+        describe('when total items is equal to threshold', () => {
+            beforeEach(() => {
+                hobbyList.$listFooter.removeAttribute('hidden');
+                hobbyList.$listFooter.textContent = 'some text';
+                
+                hobbyList._state.threshold = 4;
+                hobbyList._state.total = 4;
+                hobbyList._renderFooter();
+            });
+
+            it('should set clear the footers text content', () => {
+                expect(hobbyList.$listFooter.textContent).toBe('');
+            });
+
+            it('should add hidden attribute to the footer', () => {
+                expect(hobbyList.$listFooter.hasAttribute('hidden')).toBeTruthy();
+            });
+        });
+
+        describe('when total is more then threshold', () => {
+            beforeEach(() => {
+                hobbyList.$listFooter.setAttribute('hidden', '');
+                hobbyList.$listFooter.textContent = 'some text';
+
+                hobbyList._state.threshold = 4;
+            });
+
+            describe('when total is more then limit', () => {
+                beforeEach(() => {
+                    hobbyList._state.limit = 8;
+                    hobbyList._state.total = 10;
+                    
+                    hobbyList._renderFooter();
+                });
+
+                it('should set footer text correctly', () => {
+                    expect(hobbyList.$listFooter.textContent).toBe('Еще 2 увлечений(я)')
+                });
+
+                it('should remove hidden attribute', () => {
+                    expect(hobbyList.$listFooter.hasAttribute('hidden')).toBeFalsy();
+                });
+            });
+
+            describe('when total is equal to limit', () => {
+                beforeEach(() => {
+                    hobbyList._state.limit = 10;
+                    hobbyList._state.total = 10;
+                    
+                    hobbyList._renderFooter();
+                });
+
+                it('should set footer text correctly', () => {
+                    expect(hobbyList.$listFooter.textContent).toBe('Свернуть')
+                });
+
+                it('should remove hidden attribute', () => {
+                    expect(hobbyList.$listFooter.hasAttribute('hidden')).toBeFalsy();
+                });
+            });
         });
     });
 });

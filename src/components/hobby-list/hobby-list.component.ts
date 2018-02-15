@@ -4,7 +4,7 @@
 import * as Models from '@models';
 import * as Store from '@store';
 import * as Utils from '@utils';
-
+import * as HobbyListConstants from './hobby-list.constants';
 import { HobbyListService } from './hobby-list.service';
 
 import styles from './hobby-list.styles.scss';
@@ -54,10 +54,10 @@ export class HobbyList extends HTMLElement {
 
     public async initiate(): Promise<void> {
         const belonging: string = this.getAttribute('belonging') || Models.Belonging.OWN;
-        const threshold: number = +this.getAttribute('threshold') || 4;
+        const threshold: number = +this.getAttribute('threshold') || HobbyListConstants.DEFAULT_THRESHOLD;
 
-        this.$listContent = this._shadowRoot.querySelector('.hobby-list__content');
-        this.$listFooter = this._shadowRoot.querySelector('.hobby-list__footer');
+        this.$listContent = this._shadowRoot.querySelector(HobbyListConstants.CONTENT_QUERY);
+        this.$listFooter = this._shadowRoot.querySelector(HobbyListConstants.FOOTER_QUERY);
 
         this._state = {
             threshold,
@@ -97,7 +97,7 @@ export class HobbyList extends HTMLElement {
         this._state.loading = loading;
 
         const fn: string = loading ? 'add' : 'remove';
-        this.$listContent.classList[fn]('hobby-list__content--loading');
+        this.$listContent.classList[fn](HobbyListConstants.CONTENT_LOADING_CLASS);
     }
 
     public _render(): void {
@@ -106,7 +106,7 @@ export class HobbyList extends HTMLElement {
     }
 
     public _renderContent(): void {
-        console.log(this._state);
+        
     }
 
     public _renderFooter(): void {
@@ -114,10 +114,25 @@ export class HobbyList extends HTMLElement {
             this._hiddenFooter(false);
             this._setFooterText('Список пуст');
         }
-        
-        if (this._state.total && this._state.total - this._state.limit <= 0) {
-            this._hiddenFooter(true);
-            this._setFooterText();
+
+        if (this._state.total > 0) {
+            if(this._state.total <= this._state.threshold) {
+                this._hiddenFooter(true);
+                this._setFooterText();
+            } else {
+                this._hiddenFooter(false);
+                const remainingCount: number = this._state.total - this._state.limit;
+    
+                if (remainingCount > 0) {
+                    this._setFooterText(
+                        HobbyListConstants
+                            .FOOTER_REMAINING_LABEL
+                            .replace('{n}', remainingCount.toString())
+                    );
+                } else {
+                    this._setFooterText(HobbyListConstants.FOOTER_ROLL_UP_LABEL);
+                }
+            }
         }
     }
 
