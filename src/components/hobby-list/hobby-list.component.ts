@@ -67,14 +67,14 @@ export class HobbyList extends HTMLElement {
             total: 0
         };
 
-        await this.update();
+        await this.loadHobbies();
         this.render();
     }
 
-    public async update(): Promise<void> {
+    public async loadHobbies(): Promise<void> {
         this._setLoading(true);
 
-        const response: Store.StoreResponse = await this.loadHobbies(
+        const response: Store.StoreResponse = await Store.store.get(
             this._state.renderedIndex,
             this._state.threshold
         );
@@ -89,10 +89,6 @@ export class HobbyList extends HTMLElement {
         };
 
         this._setLoading(false);
-    }
-
-    public loadHobbies(startIndex: number, count: number): Promise<Store.StoreResponse> {
-        return Store.store.get(startIndex, count);
     }
 
     public _setLoading(loading: boolean): void {
