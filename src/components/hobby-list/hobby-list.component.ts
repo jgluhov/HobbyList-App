@@ -65,12 +65,8 @@ export class HobbyList extends HTMLElement {
 
         const response: Store.StoreResponse = await Store.store
             .get(this._state.renderedIndex, this._state.threshold);
-        setTimeout(
-            () => {
-                this._setLoading(false);
-            },
-            500
-        );
+
+        this._setLoading(false);
     }
 
     public _setLoading(loading: boolean): void {

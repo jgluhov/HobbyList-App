@@ -1,7 +1,7 @@
 /**
  * HobbyListApp | Store
  */
-import { Hobby } from '@models';
+import { Belonging, Hobby } from '@models';
 
 export type StoreResponse = {
     items: Hobby[];
@@ -28,13 +28,14 @@ export class Store {
         );
     }
 
-    public get(startIndex: number = 0, count: number = 0): Promise<StoreResponse> {
+    public get(startIndex: number = 0, count: number = 0, belonging: string = Belonging.OWN): Promise<StoreResponse> {
         return new Promise((resolve: PromiseResolve<StoreResponse>): void => {
-            const items: Hobby[] = this._data.slice(startIndex, startIndex + count);
+            const filteredHobbies: Hobby[] = this._data.filter((hobby: Hobby) => hobby.belonging === belonging);
+            const items: Hobby[] = filteredHobbies.slice(startIndex, startIndex + count);
 
             resolve({
                 items,
-                total: this.length()
+                total: filteredHobbies.length
             });
         });
     }
@@ -43,8 +44,8 @@ export class Store {
         return this._data;
     }
 
-    public length(): number {
-        return this._data.length;
+    public length(belonging: string = Belonging.OWN): number {
+        return this._data.filter((hobby: Hobby) => hobby.belonging === belonging).length;
     }
 }
 

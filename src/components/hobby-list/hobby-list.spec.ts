@@ -47,7 +47,7 @@ describe('HobbyList: Spec', () => {
     describe('#_setLoading()', () => {
         describe('when we pass true param', () => {
             beforeEach(() => {
-                hobbyList.$listContent.classList.remove('hobby-list--loading');
+                hobbyList.$listContent.classList.remove('hobby-list__content--loading');
                 hobbyList._setLoading(true);
             });
 
@@ -56,7 +56,7 @@ describe('HobbyList: Spec', () => {
             });
 
             it('should add class loading modificator', () => {
-                expect(hobbyList.$listContent.classList.contains('hobby-list--loading'))
+                expect(hobbyList.$listContent.classList.contains('hobby-list__content--loading'))
                     .toBeTruthy();
             });
         });
