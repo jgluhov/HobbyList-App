@@ -209,4 +209,50 @@ describe('HobbyList: Spec', () => {
             });
         });
     });
+
+    describe('#_renderContent', () => {
+        beforeEach(() => {
+            hobbyList._state.threshold = 4;
+            hobbyList._state.limit = 4;
+        });
+
+        describe('when there are no hobbies in store', () => {
+            describe('when there are no items in content', () => {
+                beforeEach(() => {
+                    hobbyList._state.items = [];
+                    hobbyList._state.total = 0;
+                    hobbyList._state.renderedIndex = 0;
+    
+                    hobbyList._renderContent();
+                });
+
+                it('should not change renderingIndex', () => {
+                    expect(hobbyList._state.renderedIndex).toBe(0);
+                });
+    
+                it('should not change list content', () => {
+                    expect(hobbyList.$listContent.children.length).toBe(0);
+                });
+            });
+
+            describe('when there are list items in content', () => {
+                beforeEach(() => {
+                    hobbyList._state.items = [];
+                    hobbyList._state.total = 0;
+                    hobbyList._state.renderedIndex = 1;
+                    hobbyList.$listContent.appendChild(hobbyList.service.toElements([ownHobby1]));
+    
+                    hobbyList._renderContent();
+                });
+    
+                it('should set renderingIndex to 0', () => {
+                    expect(hobbyList._state.renderedIndex).toBe(0);
+                });
+    
+                it('should clear list content', () => {
+                    expect(hobbyList.$listContent.children.length).toBe(0);
+                });
+            });
+        });
+    });
 });

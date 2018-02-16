@@ -56,8 +56,10 @@ export class HobbyList extends HTMLElement {
         const belonging: string = this.getAttribute('belonging') || Models.Belonging.OWN;
         const threshold: number = +this.getAttribute('threshold') || HobbyListConstants.DEFAULT_THRESHOLD;
 
-        this.$listContent = this._shadowRoot.querySelector(HobbyListConstants.CONTENT_QUERY);
-        this.$listFooter = this._shadowRoot.querySelector(HobbyListConstants.FOOTER_QUERY);
+        this.$listContent = this._shadowRoot
+            .querySelector(HobbyListConstants.CONTENT_QUERY);
+        this.$listFooter = this._shadowRoot
+            .querySelector(HobbyListConstants.FOOTER_QUERY);
 
         this._state = {
             threshold,
@@ -69,7 +71,8 @@ export class HobbyList extends HTMLElement {
             total: 0
         };
 
-        this._setListType();
+        this.$listContent.classList.add(`hobby-list--${this._state.belonging}`);
+
         await this.loadHobbies();
         this._render();
     }
@@ -99,10 +102,6 @@ export class HobbyList extends HTMLElement {
 
         const fn: string = loading ? 'add' : 'remove';
         this.$listContent.classList[fn](HobbyListConstants.CONTENT_LOADING_CLASS);
-    }
-
-    public _setListType(): void {
-        this.$listContent.classList.add(`hobby-list--${this._state.belonging}`);
     }
 
     public _render(): void {
