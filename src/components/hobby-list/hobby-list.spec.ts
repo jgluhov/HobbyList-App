@@ -298,6 +298,42 @@ describe('HobbyList: Spec', () => {
                     expect(hobbyList.$listContent.children.length).toBe(3);
                 });
             });
-        })
+
+            describe('when there are more hobbies then max', () => {
+                beforeEach(() => {
+                    hobbyList._state.items = [
+                        ownHobby1, ownHobby2, ownHobby3,
+                        ownHobby4, ownHobby5, ownHobby6, 
+                        ownHobby1, ownHobby2, ownHobby3,
+                        ownHobby4
+                    ];
+                    hobbyList._state.renderingIndex = 0;
+                    hobbyList._renderContent();
+                });
+
+                it('should not change renderingIndex', () => {
+                    expect(hobbyList._state.renderingIndex).toBe(4);
+                });
+    
+                it('should not change list content', () => {
+                    expect(hobbyList.$listContent.children.length).toBe(4);
+                });
+
+                describe('when threshold is increased', () => {
+                    beforeEach(() => {
+                        hobbyList._state.threshold = 8;
+                        hobbyList._renderContent();
+                    });
+
+                    it('should change renderingIndex to', () => {
+                        expect(hobbyList._state.renderingIndex).toBe(8);
+                    });
+        
+                    it('should not change list content', () => {
+                        expect(hobbyList.$listContent.children.length).toBe(8);
+                    });
+                });
+            });
+        });
     });
 });

@@ -115,6 +115,7 @@ export class HobbyList extends HTMLElement {
     }
 
     public _renderContent(): void {
+        // const listItems: HTMLLIElement[] = [].slice.call(this.$listContent.children);
         while(
             this._state.renderingIndex < this._state.threshold && 
             this._state.renderingIndex < this._state.items.length

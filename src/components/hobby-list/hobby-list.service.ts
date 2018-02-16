@@ -2,6 +2,7 @@
  * HobbyListApp | HobbyList Service
  */
 import { Hobby } from '@models';
+import * as hobbyListConstants from './hobby-list.constants';
 
 export class HobbyListService {
     public toElements(hobbies: Hobby[]): DocumentFragment {
@@ -11,11 +12,11 @@ export class HobbyListService {
             const li: HTMLLIElement = document.createElement('li');
             const span: HTMLSpanElement = document.createElement('span');
 
-            span.className = 'hobby-list__icon';
+            span.className = hobbyListConstants.LIST_ICON_CLASS;
             li.appendChild(span);
 
             li.id = hobby.id;
-            li.className = 'hobby-list__item';
+            li.className = hobbyListConstants.LIST_ITEM_CLASS;;
             li.appendChild(document.createTextNode(hobby.text));
 
             fragment.appendChild(li);
