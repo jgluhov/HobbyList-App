@@ -12,6 +12,12 @@
     margin-bottom: 15px;
 }
 
+:host .hobby-form__form {
+    display: flex;
+    justify-content: space-between;
+    width: $hobby-form-width;
+}
+
 :host .form__input {
     font-size: $font-size-base;
     padding: 8px;

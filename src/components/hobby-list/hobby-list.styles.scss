@@ -8,6 +8,9 @@
     font-family: $font-family-base;
     font-size: $font-size-base;
 }
+:host .hobby-list {
+    width: $hobby-list-width;
+}
 
 :host .hobby-list__content {
     height: 100%;
@@ -15,8 +18,6 @@
     margin: 0;
     padding: 0;
     list-style-type: none;
-    
-    transition: all 100ms ease;
 }
 
 :host .hobby-list__icon {
@@ -35,7 +36,42 @@
     &:hover {
         @include hightlight;
     }
+
+    &.hobby-list__item--removed {
+        animation: list-item-removed-animation .6s 
+            cubic-bezier(.55,-0.04,.91,.94) forwards;
+    }
+
+    &.hobby-list__item--inserted {
+        animation: 
+            appearing 0.5s 0s cubic-bezier(0,.8,.32,1.07) forwards;
+    }
 }
+
+@keyframes disappearing {
+    from {
+        height: 25px;
+        opacity: 1;
+    }
+ 
+    to {
+        height: 0px;
+        opacity: 0;
+    }
+}
+ 
+@keyframes appearing {
+    from {
+        height: 0px;
+        opacity: 0;
+    }
+ 
+    to {
+        height: 25px;
+        opacity: 1;
+    }
+}
+
 
 :host .hobby-list--own {
     .hobby-list__item {

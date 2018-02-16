@@ -76,7 +76,10 @@ export class HobbyList extends HTMLElement {
         this.$listFooter = this._shadowRoot
             .querySelector(HobbyListConstants.FOOTER_QUERY);
         
-        this.$listContent.classList.add(`hobby-list--${this._state.belonging}`);
+        this.$listContent.parentElement
+            .classList.add(`hobby-list--${this._state.belonging}`);
+
+        this.$listContent.addEventListener('animationend', this._handleAnimationEnd);
 
         await this.loadHobbies();
         this._render();
@@ -157,6 +160,7 @@ export class HobbyList extends HTMLElement {
             .children.item(indexAt);
         
         const newEl = this.service.toElements([ hobby ]);
+        newEl.firstElementChild.classList.add(HobbyListConstants.LIST_ITEM_INSERTED_CLASS);
         
         this.$listContent.insertBefore(newEl, prevEl);
         this._state.renderingIndex += 1;
@@ -168,5 +172,9 @@ export class HobbyList extends HTMLElement {
 
     public _hiddenFooter(hidden: boolean): void {
         this.$listFooter.hidden = hidden;
+    }
+
+    public _handleAnimationEnd(e): void {
+        console.log(e);
     }
  }
