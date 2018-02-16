@@ -9,12 +9,13 @@ import { HobbyListService } from './hobby-list.service';
 
 import styles from './hobby-list.styles.scss';
 import template from './hobby-list.template.html';
+import { Hobby } from '@models';
 
 type HobbyListState = {
     threshold: number;
     max: number;
     belonging: string;
-    renderedIndex: number;
+    renderingIndex: number;
     loading: boolean;
     items: Models.Hobby[];
     total: number;
@@ -29,7 +30,7 @@ export class HobbyList extends HTMLElement {
         threshold: HobbyListConstants.MAX,
         max: HobbyListConstants.MAX,
         belonging: Models.Belonging.OWN,
-        renderedIndex: 0,
+        renderingIndex: 0,
         loading: false,
         items: [],
         total: 0
@@ -85,7 +86,7 @@ export class HobbyList extends HTMLElement {
         this._setLoading(true);
 
         const response: Store.StoreResponse = await Store.store.get(
-            this._state.renderedIndex,
+            this._state.renderingIndex,
             this._state.threshold
         );
 
@@ -114,7 +115,13 @@ export class HobbyList extends HTMLElement {
     }
 
     public _renderContent(): void {
-        
+        while(
+            this._state.renderingIndex < this._state.threshold && 
+            this._state.renderingIndex < this._state.items.length
+        ) {
+            const hobby: Hobby = this._state.items[this._state.renderingIndex];
+            this._insert(this._state.renderingIndex, hobby);
+        }
     }
 
     public _renderFooter(): void {
@@ -142,6 +149,16 @@ export class HobbyList extends HTMLElement {
                 }
             }
         }
+    }
+
+    public _insert(indexAt: number, hobby: Hobby) {
+        const prevEl: HTMLLIElement = <HTMLLIElement>this.$listContent
+            .children.item(indexAt);
+        
+        const newEl = this.service.toElements([ hobby ]);
+        
+        this.$listContent.insertBefore(newEl, prevEl);
+        this._state.renderingIndex += 1;
     }
 
     public _setFooterText(text: string = ''): void {

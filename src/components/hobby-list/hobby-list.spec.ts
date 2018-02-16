@@ -210,24 +210,68 @@ describe('HobbyList: Spec', () => {
         });
     });
 
+    describe('#_insert()', () => {
+        describe('when there are no elements in listContent', () => {
+            beforeEach(() => {
+                hobbyList._insert(0, ownHobby1);
+            });
+
+            it('should render list item element', () => {
+                expect(hobbyList.$listContent.children.length).toBe(1);
+            });
+
+            it('should increase renderingIndex', () => {
+                expect(hobbyList._state.renderingIndex).toBe(1);
+            });
+        });
+
+        describe('when there are elements in listContent', () => {
+            let renderedElems: DocumentFragment;
+            let insertedEl: HTMLLIElement;
+            beforeEach(() => {
+                hobbyList._state.renderingIndex = 0;
+                renderedElems = hobbyList.service.toElements([
+                    ownHobby1, ownHobby2
+                ]);
+                insertedEl = <HTMLLIElement>hobbyList.service
+                    .toElements([ ownHobby3 ]).firstElementChild;
+
+                hobbyList.$listContent.appendChild(renderedElems);
+
+                hobbyList._insert(1, ownHobby3);
+            });
+
+            it('should insert element at correct place', () => {
+                const li: HTMLLIElement = <HTMLLIElement>hobbyList
+                    .$listContent.children.item(1);
+
+                expect(li.isEqualNode(insertedEl)).toBeTruthy()
+            });
+
+            it('should increase renderingIndex', () => {
+                expect(hobbyList._state.renderingIndex).toBe(1);
+            });
+        });
+    });
+
     describe('#_renderContent', () => {
         beforeEach(() => {
             hobbyList._state.threshold = 4;
             hobbyList._state.max = 4;
         });
 
-        describe('when there are no hobbies in store', () => {
-            describe('when there are no items in content', () => {
+        describe('Inserting...', () => {
+            describe('when there are no hobbies in store', () => {
                 beforeEach(() => {
                     hobbyList._state.items = [];
                     hobbyList._state.total = 0;
-                    hobbyList._state.renderedIndex = 0;
+                    hobbyList._state.renderingIndex = 0;
     
                     hobbyList._renderContent();
                 });
 
                 it('should not change renderingIndex', () => {
-                    expect(hobbyList._state.renderedIndex).toBe(0);
+                    expect(hobbyList._state.renderingIndex).toBe(0);
                 });
     
                 it('should not change list content', () => {
@@ -235,24 +279,25 @@ describe('HobbyList: Spec', () => {
                 });
             });
 
-            xdescribe('when there are list items in content', () => {
+            describe('when there are less hobbies then max', () => {
                 beforeEach(() => {
-                    hobbyList._state.items = [];
-                    hobbyList._state.total = 0;
-                    hobbyList._state.renderedIndex = 1;
-                    hobbyList.$listContent.appendChild(hobbyList.service.toElements([ownHobby1]));
-    
+                    hobbyList._state.items = [
+                        ownHobby1,
+                        ownHobby2,
+                        ownHobby3
+                    ];
+                    hobbyList._state.renderingIndex = 0;
                     hobbyList._renderContent();
                 });
-    
-                it('should set renderingIndex to 0', () => {
-                    expect(hobbyList._state.renderedIndex).toBe(0);
+
+                it('should not change renderingIndex', () => {
+                    expect(hobbyList._state.renderingIndex).toBe(3);
                 });
     
-                it('should clear list content', () => {
-                    expect(hobbyList.$listContent.children.length).toBe(0);
+                it('should not change list content', () => {
+                    expect(hobbyList.$listContent.children.length).toBe(3);
                 });
             });
-        });
+        })
     });
 });

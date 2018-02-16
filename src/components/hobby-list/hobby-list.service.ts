@@ -15,7 +15,7 @@ export class HobbyListService {
             li.appendChild(span);
 
             li.id = hobby.id;
-            li.className = 'hobby-list__list-item';
+            li.className = 'hobby-list__item';
             li.appendChild(document.createTextNode(hobby.text));
 
             fragment.appendChild(li);
