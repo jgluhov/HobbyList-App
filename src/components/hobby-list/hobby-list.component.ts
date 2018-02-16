@@ -12,20 +12,28 @@ import template from './hobby-list.template.html';
 
 type HobbyListState = {
     threshold: number;
-    renderedIndex: number;
+    max: number;
     belonging: string;
+    renderedIndex: number;
     loading: boolean;
-    limit: number;
     items: Models.Hobby[];
     total: number;
 };
 
 export class HobbyList extends HTMLElement {
-    public _state: HobbyListState;
     public _shadowRoot: ShadowRoot;
     public $listContent: HTMLDivElement;
     public $listFooter: HTMLDialogElement;
     public service: HobbyListService = new HobbyListService();
+    public _state: HobbyListState = {
+        threshold: HobbyListConstants.MAX,
+        max: HobbyListConstants.MAX,
+        belonging: Models.Belonging.OWN,
+        renderedIndex: 0,
+        loading: false,
+        items: [],
+        total: 0
+    };
 
     constructor() {
         super();
@@ -44,8 +52,17 @@ export class HobbyList extends HTMLElement {
 
     static get observedAttributes(): string[] {
         return [
-            'belonging', 'threshold'
+            'belonging', 
+            'max'
         ];
+    }
+
+    attributeChangedCallback(attrName: string, oldValue: string, newValue: string): void {
+        if (attrName === 'belonging') {
+            this._state.belonging = newValue;
+        } else if (attrName === 'max') {
+            this._state.max = +newValue;
+        }
     }
 
     public connectedCallback(): void {
@@ -53,24 +70,11 @@ export class HobbyList extends HTMLElement {
     }
 
     public async initiate(): Promise<void> {
-        const belonging: string = this.getAttribute('belonging') || Models.Belonging.OWN;
-        const threshold: number = +this.getAttribute('threshold') || HobbyListConstants.DEFAULT_THRESHOLD;
-
         this.$listContent = this._shadowRoot
             .querySelector(HobbyListConstants.CONTENT_QUERY);
         this.$listFooter = this._shadowRoot
             .querySelector(HobbyListConstants.FOOTER_QUERY);
-
-        this._state = {
-            threshold,
-            belonging,
-            renderedIndex: 0,
-            loading: false,
-            limit: threshold,
-            items: [],
-            total: 0
-        };
-
+        
         this.$listContent.classList.add(`hobby-list--${this._state.belonging}`);
 
         await this.loadHobbies();
@@ -120,12 +124,12 @@ export class HobbyList extends HTMLElement {
         }
 
         if (this._state.total > 0) {
-            if(this._state.total <= this._state.threshold) {
+            if(this._state.total <= this._state.max) {
                 this._hiddenFooter(true);
                 this._setFooterText();
             } else {
                 this._hiddenFooter(false);
-                const remainingCount: number = this._state.total - this._state.limit;
+                const remainingCount: number = this._state.total - this._state.threshold;
     
                 if (remainingCount > 0) {
                     this._setFooterText(

@@ -47,7 +47,7 @@ describe('HobbyList: Spec', () => {
         describe('it should look after threshold attr', () => {
             it('should contain attr name', () => {
                 expect(Components.HobbyList.observedAttributes)
-                    .toContain('threshold');
+                    .toContain('max');
             });
         });
 
@@ -64,12 +64,12 @@ describe('HobbyList: Spec', () => {
                 expect(hobbyListUndef._state.belonging).toBe(Models.Belonging.OWN);
             });
 
-            it('shoud set threshold to default value', () => {
-                expect(hobbyListUndef._state.threshold).toBe(4);
+            it('shoud set max to threshold value by default ', () => {
+                expect(hobbyListUndef._state.max).toBe(4);
             });
 
-            it('shoud set limit to be equal to threshold default value', () => {
-                expect(hobbyListUndef._state.limit).toBe(4);
+            it('shoud set threshold equal to max', () => {
+                expect(hobbyListUndef._state.threshold).toBe(hobbyListUndef._state.max);
             });
         });
     });
@@ -171,12 +171,12 @@ describe('HobbyList: Spec', () => {
                 hobbyList.$listFooter.setAttribute('hidden', '');
                 hobbyList.$listFooter.textContent = 'some text';
 
-                hobbyList._state.threshold = 4;
+                hobbyList._state.max = 4;
             });
 
-            describe('when total is more then limit', () => {
+            describe('when total is more then threshold', () => {
                 beforeEach(() => {
-                    hobbyList._state.limit = 8;
+                    hobbyList._state.threshold = 8;
                     hobbyList._state.total = 10;
                     
                     hobbyList._renderFooter();
@@ -191,9 +191,9 @@ describe('HobbyList: Spec', () => {
                 });
             });
 
-            describe('when total is equal to limit', () => {
+            describe('when total is equal to threshold', () => {
                 beforeEach(() => {
-                    hobbyList._state.limit = 10;
+                    hobbyList._state.threshold = 10;
                     hobbyList._state.total = 10;
                     
                     hobbyList._renderFooter();
@@ -213,7 +213,7 @@ describe('HobbyList: Spec', () => {
     describe('#_renderContent', () => {
         beforeEach(() => {
             hobbyList._state.threshold = 4;
-            hobbyList._state.limit = 4;
+            hobbyList._state.max = 4;
         });
 
         describe('when there are no hobbies in store', () => {
@@ -235,7 +235,7 @@ describe('HobbyList: Spec', () => {
                 });
             });
 
-            describe('when there are list items in content', () => {
+            xdescribe('when there are list items in content', () => {
                 beforeEach(() => {
                     hobbyList._state.items = [];
                     hobbyList._state.total = 0;
