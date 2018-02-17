@@ -13,7 +13,7 @@ import { Hobby } from '@models';
 
 type HobbyListState = {
     threshold: number;
-    max: number;
+    length: number;
     belonging: string;
     renderingIndex: number;
     loading: boolean;
@@ -27,8 +27,8 @@ export class HobbyList extends HTMLElement {
     public $listFooter: HTMLDialogElement;
     public service: HobbyListService = new HobbyListService();
     public _state: HobbyListState = {
-        threshold: HobbyListConstants.MAX,
-        max: HobbyListConstants.MAX,
+        threshold: HobbyListConstants.DEFAULT_LENGTH,
+        length: HobbyListConstants.DEFAULT_LENGTH,
         belonging: Models.Belonging.OWN,
         renderingIndex: 0,
         loading: false,
@@ -54,15 +54,15 @@ export class HobbyList extends HTMLElement {
     static get observedAttributes(): string[] {
         return [
             'belonging', 
-            'max'
+            'length'
         ];
     }
 
     attributeChangedCallback(attrName: string, oldValue: string, newValue: string): void {
         if (attrName === 'belonging') {
             this._state.belonging = newValue;
-        } else if (attrName === 'max') {
-            this._state.max = +newValue;
+        } else if (attrName === 'length') {
+            this._state.length = +newValue || HobbyListConstants.DEFAULT_LENGTH;
         }
     }
 
@@ -80,6 +80,7 @@ export class HobbyList extends HTMLElement {
             .classList.add(`hobby-list--${this._state.belonging}`);
 
         this.$listContent.addEventListener('animationend', this._handleAnimationEnd);
+        this.$listFooter.addEventListener('click', this._handleFooterClick);
 
         await this.loadHobbies();
         this._render();
@@ -118,7 +119,6 @@ export class HobbyList extends HTMLElement {
     }
 
     public _renderContent(): void {
-        // const listItems: HTMLLIElement[] = [].slice.call(this.$listContent.children);
         while(
             this._state.renderingIndex < this._state.threshold && 
             this._state.renderingIndex < this._state.items.length
@@ -135,7 +135,7 @@ export class HobbyList extends HTMLElement {
         }
 
         if (this._state.total > 0) {
-            if(this._state.total <= this._state.max) {
+            if(this._state.total <= this._state.length) {
                 this._hiddenFooter(true);
                 this._setFooterText();
             } else {
@@ -172,6 +172,13 @@ export class HobbyList extends HTMLElement {
 
     public _hiddenFooter(hidden: boolean): void {
         this.$listFooter.hidden = hidden;
+    }
+
+    public _handleFooterClick(e: MouseEvent): void {
+        if (this._state.items.length) {
+            return;
+        }
+
     }
 
     public _handleAnimationEnd(e): void {

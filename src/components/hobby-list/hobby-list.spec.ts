@@ -4,6 +4,7 @@
 import { Belonging, Hobby } from '@models';
 import * as Components from '@components';
 import * as Models from '@models';
+import * as HobbyListConstants from '@components'
 
 describe('HobbyList: Spec', () => {
     let hobbyList: Components.HobbyList;
@@ -44,10 +45,10 @@ describe('HobbyList: Spec', () => {
             });
         });
 
-        describe('it should look after threshold attr', () => {
+        describe('it should look after length attr', () => {
             it('should contain attr name', () => {
                 expect(Components.HobbyList.observedAttributes)
-                    .toContain('max');
+                    .toContain('length');
             });
         });
 
@@ -64,12 +65,12 @@ describe('HobbyList: Spec', () => {
                 expect(hobbyListUndef._state.belonging).toBe(Models.Belonging.OWN);
             });
 
-            it('shoud set max to threshold value by default ', () => {
-                expect(hobbyListUndef._state.max).toBe(4);
+            it('shoud set length to threshold value by default ', () => {
+                expect(hobbyListUndef._state.length).toBe(4);
             });
 
-            it('shoud set threshold equal to max', () => {
-                expect(hobbyListUndef._state.threshold).toBe(hobbyListUndef._state.max);
+            it('shoud set threshold equal to length', () => {
+                expect(hobbyListUndef._state.threshold).toBe(hobbyListUndef._state.length);
             });
         });
     });
@@ -171,7 +172,7 @@ describe('HobbyList: Spec', () => {
                 hobbyList.$listFooter.setAttribute('hidden', '');
                 hobbyList.$listFooter.textContent = 'some text';
 
-                hobbyList._state.max = 4;
+                hobbyList._state.length = 4;
             });
 
             describe('when total is more then threshold', () => {
@@ -228,6 +229,8 @@ describe('HobbyList: Spec', () => {
         describe('when there are elements in listContent', () => {
             let renderedElems: DocumentFragment;
             let insertedEl: HTMLLIElement;
+            let li: HTMLLIElement;
+            
             beforeEach(() => {
                 hobbyList._state.renderingIndex = 0;
                 renderedElems = hobbyList.service.toElements([
@@ -239,17 +242,19 @@ describe('HobbyList: Spec', () => {
                 hobbyList.$listContent.appendChild(renderedElems);
 
                 hobbyList._insert(1, ownHobby3);
+                li = <HTMLLIElement>hobbyList.$listContent.children.item(1);
             });
 
             it('should insert element at correct place', () => {
-                const li: HTMLLIElement = <HTMLLIElement>hobbyList
-                    .$listContent.children.item(1);
-
-                expect(li.isEqualNode(insertedEl)).toBeTruthy()
+                expect(li.id).toBe(insertedEl.id);
             });
 
             it('should increase renderingIndex', () => {
                 expect(hobbyList._state.renderingIndex).toBe(1);
+            });
+
+            it('should add inserted class to element', () => {
+                expect(li.classList.contains('hobby-list__item--inserted'));
             });
         });
     });
@@ -257,7 +262,7 @@ describe('HobbyList: Spec', () => {
     describe('#_renderContent', () => {
         beforeEach(() => {
             hobbyList._state.threshold = 4;
-            hobbyList._state.max = 4;
+            hobbyList._state.length = 4;
         });
 
         describe('Inserting...', () => {
@@ -279,7 +284,7 @@ describe('HobbyList: Spec', () => {
                 });
             });
 
-            describe('when there are less hobbies then max', () => {
+            describe('when there are less hobbies then length', () => {
                 beforeEach(() => {
                     hobbyList._state.items = [
                         ownHobby1,
@@ -299,7 +304,7 @@ describe('HobbyList: Spec', () => {
                 });
             });
 
-            describe('when there are more hobbies then max', () => {
+            describe('when there are more hobbies then length', () => {
                 beforeEach(() => {
                     hobbyList._state.items = [
                         ownHobby1, ownHobby2, ownHobby3,
@@ -334,6 +339,12 @@ describe('HobbyList: Spec', () => {
                     });
                 });
             });
+        });
+    });
+
+    describe('#_handleFooterClick()', () => {
+        beforeEach(() => {
+            hobbyList._state.threshold = 4;
         });
     });
 });

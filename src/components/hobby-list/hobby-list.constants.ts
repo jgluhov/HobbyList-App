@@ -1,7 +1,8 @@
 /**
  * HobbyListApp | HobbyList Constants
  */
-export const MAX: number = 4;
+export const DEFAULT_LENGTH: number = 4;
+export const THRESHOLD_STEP: number = 4;
 
 export const CONTENT_QUERY: string = '.hobby-list__content';
 export const FOOTER_QUERY: string = '.hobby-list__footer';
