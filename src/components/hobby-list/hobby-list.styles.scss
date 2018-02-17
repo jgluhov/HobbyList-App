@@ -8,9 +8,6 @@
     font-family: $font-family-base;
     font-size: $font-size-base;
 }
-:host .hobby-list {
-    width: $hobby-list-width;
-}
 
 :host .hobby-list__content {
     height: 100%;
@@ -21,16 +18,16 @@
 }
 
 :host .hobby-list__icon {
-    width: $hobby-list__icon-size;
+    @include size($hobby-list__icon-size, $hobby-list__icon-size);
     margin-right: $hobby-list__icon-size / 2;
+    display: inline-block;
 }
 
 :host .hobby-list__item {
     font-size: $font-size-small;
-    display: flex;
-    align-items: center;
     color: $hobby-list__item-color;
     line-height: 25px;
+    display: table;
     opacity: 1;
     
     &:hover {
