@@ -19,20 +19,20 @@ async function main(): Promise<void> {
 }
 
 function initiateStore(): void {
-    store.append(new Hobby('own-hobby-1'));
-    store.append(new Hobby('own-hobby-2'));
-    store.append(new Hobby('own-hobby-3'));
-    store.append(new Hobby('own-hobby-4'));
-    store.append(new Hobby('own-hobby-5'));
-    store.append(new Hobby('own-hobby-6'));
-    store.append(new Hobby('own-hobby-7'));
-    store.append(new Hobby('own-hobby-8'));
-    store.append(new Hobby('own-hobby-9'));
-    store.append(new Hobby('own-hobby-10'));
+    store.create(new Hobby('own-hobby-1'));
+    store.create(new Hobby('own-hobby-2'));
+    store.create(new Hobby('own-hobby-3'));
+    store.create(new Hobby('own-hobby-4'));
+    store.create(new Hobby('own-hobby-5'));
+    store.create(new Hobby('own-hobby-6'));
+    store.create(new Hobby('own-hobby-7'));
+    store.create(new Hobby('own-hobby-8'));
+    store.create(new Hobby('own-hobby-9'));
+    store.create(new Hobby('own-hobby-10'));
 }
 
 function handleHobbyCreate(e: CustomEvent): void {
-    store.append(e.detail.data);
+    store.create(e.detail.data);
 }
 
 addEventListener('load', main);

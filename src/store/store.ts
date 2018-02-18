@@ -15,38 +15,43 @@ type PromiseResolve<T> = {
 export class Store {
     private _data: Hobby[] = [];
 
-    public append(hobby: Hobby): void {
+    public async create(hobby: Hobby): Promise<StoreResponse> {
         this._data = [
             ...this._data,
             hobby
         ];
+
+        return await {
+            items: [ ...this._data ],
+            total: this._data.length
+        }
     }
 
-    public remove(id: string): Promise<StoreResponse>  {
-        return new Promise((resolve: PromiseResolve<StoreResponse>): void => {
-            this._data = this._data.filter((hobby: Hobby) => hobby.id !== id);
-            
-            resolve({
-                items: [...this._data],
-                total: this._data.length
-            })
-        });
+    public async get(startIndex: number = 0, count: number = 0, belonging: string = Belonging.OWN): Promise<StoreResponse> { 
+        const filteredHobbies: Hobby[] = this._data.filter((hobby: Hobby) => hobby.belonging === belonging);
+        const items: Hobby[] = filteredHobbies.slice(startIndex, startIndex + count);
+
+        return await {
+            items,
+            total: filteredHobbies.length
+        };
     }
 
-    public get(startIndex: number = 0, count: number = 0, belonging: string = Belonging.OWN): Promise<StoreResponse> {
-        return new Promise((resolve: PromiseResolve<StoreResponse>): void => {
-            const filteredHobbies: Hobby[] = this._data.filter((hobby: Hobby) => hobby.belonging === belonging);
-            const items: Hobby[] = filteredHobbies.slice(startIndex, startIndex + count);
-
-            resolve({
-                items,
-                total: filteredHobbies.length
-            });
-        });
+    public async remove(id: string): Promise<StoreResponse>  {
+        this._data = this._data
+            .filter((hobby: Hobby) => hobby.id !== id);
+        
+        return await {
+            items: [ ...this._data ],
+            total: this._data.length
+        };
     }
 
-    public getAll(): Hobby[] {
-        return this._data;
+    public async getAll(): Promise<StoreResponse> {
+        return await { 
+            items: [ ...this._data ],
+            total: this._data.length
+        };
     }
 
     public length(belonging: string = Belonging.OWN): number {

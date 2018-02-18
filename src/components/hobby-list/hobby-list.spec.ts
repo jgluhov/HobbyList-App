@@ -3,8 +3,20 @@
  */
 import { Belonging, Hobby } from '@models';
 import * as Components from '@components';
+import * as Store from '@store';
 import * as Models from '@models';
 import * as sinon from 'sinon';
+import jasmineCo from 'jasmine-co';
+
+jasmineCo.install();
+
+interface IUpdateStateHandler {
+    (response: Store.StoreResponse): void
+}
+
+interface IGeneratorHobbies {
+    (count: number): Hobby[]
+}
 
 describe('HobbyList: Spec', () => {
     let hobbyList: Components.HobbyList;
@@ -18,10 +30,10 @@ describe('HobbyList: Spec', () => {
     let friendHobby1: Hobby;
     let friendHobby2: Hobby;
     let sandobox: sinon.SinonSandbox;
-
-    beforeEach(() => {
-        sandobox = sinon.createSandbox();
-
+    
+    let generateHobbies: IGeneratorHobbies;
+    
+    beforeAll(() => {
         ownHobby1 = new Hobby('own-hobby-1');
         ownHobby2 = new Hobby('own-hobby-2');
         ownHobby3 = new Hobby('own-hobby-3');
@@ -30,6 +42,14 @@ describe('HobbyList: Spec', () => {
         ownHobby6 = new Hobby('own-hobby-6');
         friendHobby1 = new Hobby('friend-hobby-1', Belonging.FRIEND);
         friendHobby2 = new Hobby('friend-hobby-2', Belonging.FRIEND);
+
+        generateHobbies = (count: number) => {
+            return new Array(count).fill(0).map((index: number) => ownHobby1);
+        };
+    });
+
+    beforeEach(() => {
+        sandobox = sinon.createSandbox();  
     })
 
     afterEach(() => {
@@ -411,21 +431,30 @@ describe('HobbyList: Spec', () => {
 
     describe('#_handleFooterClick()', () => {
         let event: MouseEvent;
-        let loadHobbiesStub: sinon.SinonStub;
+        let loadHobbiesSpy: sinon.SinonSpy;
+        let serviceGetStub: sinon.SinonStub;
 
         beforeEach(() => {
             event = new MouseEvent('click');
             hobbyList._state.threshold = 4;
-            loadHobbiesStub = sinon.stub(hobbyList, '_loadHobbies').returns(() => {
-                return new Promise(() => {});
-            })
+            loadHobbiesSpy = sandobox.spy(hobbyList, '_loadHobbies');
+            serviceGetStub = sandobox.stub(hobbyList.service, 'get')
+                .returns(async(startIndex: number, count: number) => {
+                    const response: Store.StoreResponse = {
+                        items: [ ...generateHobbies(count) ],
+                        total:  10
+                    };
+
+                    hobbyList._handleUpdateState
+
+                    return await response;
+                });
         });
 
         describe('when there are no items in state', () => {
-            beforeEach(() => {
+            beforeEach(async() => {
                 hobbyList._state.total = 0;
-                
-                hobbyList._handleFooterClick(event);
+                await hobbyList._handleFooterClick(event);
             });
 
             it('should not increase threshold', () => {
@@ -433,14 +462,13 @@ describe('HobbyList: Spec', () => {
             });
 
             it('should not call loadHobbies', () => {
-                expect(loadHobbiesStub.called).toBeFalsy();
+                expect(loadHobbiesSpy.called).toBeFalsy();
             });
         });
 
         describe('when there are less items then length', () => {
             beforeEach(() => {
                 hobbyList._state.total = 3;
-                
                 hobbyList._handleFooterClick(event);
             });
 
@@ -449,15 +477,14 @@ describe('HobbyList: Spec', () => {
             });
 
             it('should not call loadHobbies', () => {
-                expect(loadHobbiesStub.called).toBeFalsy();
+                expect(loadHobbiesSpy.called).toBeFalsy();
             });
         });
 
-        describe('when total and threshold are equal', () => {
-            beforeEach(() => {
+        xdescribe('when total and threshold are equal', () => {
+            beforeEach(async() => {
                 hobbyList._state.total = 4;
-
-                hobbyList._handleFooterClick(event);
+                await hobbyList._handleFooterClick(event);
             });
 
             it('should not increase threshold', () => {
@@ -465,16 +492,15 @@ describe('HobbyList: Spec', () => {
             });
 
             it('should not call loadHobbies', () => {
-                expect(loadHobbiesStub.called).toBeFalsy();
+                expect(loadHobbiesSpy.called).toBeFalsy();
             });
         });
 
-        describe('when there are more items then threshold', () => {
-            describe('when we click once', () => {
-                beforeEach(() => {
-                    hobbyList._state.total = 10;
-    
-                    hobbyList._handleFooterClick(event);
+        xdescribe('when there are more items then threshold', () => {
+            fdescribe('when we click once', () => {
+                beforeEach(async() => {
+                    hobbyList._state.total = 10; 
+                    await hobbyList._handleFooterClick(event);
                 });
     
                 it('should increase threshold', () => {
@@ -482,20 +508,21 @@ describe('HobbyList: Spec', () => {
                 });
     
                 it('should call loadHobbies', () => {
-                    expect(loadHobbiesStub.called).toBeTruthy();
+                    expect(loadHobbiesSpy.called).toBeTruthy();
                 });
 
                 it('should call loadHobbies with correct params', () => {
-                    expect(loadHobbiesStub.withArgs(4, 2)).toBeTruthy();
+                    expect(loadHobbiesSpy.withArgs(4, 2)).toBeTruthy();
                 });
             });
 
-            describe('then we click twice', () => {
-                beforeEach(() => {
+            xdescribe('then we click twice', () => {
+                beforeEach(async() => {
                     hobbyList._state.total = 10;
-    
-                    hobbyList._handleFooterClick(event);
-                    hobbyList._handleFooterClick(event);
+                    hobbyList._state.items = [ ...generateHobbies(4) ];
+                    
+                    await hobbyList._handleFooterClick(event);
+                    await hobbyList._handleFooterClick(event);
                 });
 
                 it('should increase threshold to 10', () => {
@@ -503,32 +530,59 @@ describe('HobbyList: Spec', () => {
                 });
 
                 it('should call loadHobbies twice', () => {
-                    expect(loadHobbiesStub.calledTwice).toBeTruthy();
+                    expect(loadHobbiesSpy.calledTwice).toBeTruthy();
                 })
 
                 it('should call loadHobbies firstly with correct params', () => {
-                    expect(loadHobbiesStub.args[0][1]).toBe(4);
+                    expect(loadHobbiesSpy.args[0][1]).toBe(4);
                 });
 
                 it('should call loadHobbies secondly with correct params', () => {
-                    expect(loadHobbiesStub.args[1][1]).toBe(2);
+                    expect(loadHobbiesSpy.args[1][1]).toBe(2);
                 });
             });
 
-            describe('when user click 3 times', () => {
-                beforeEach(() => {
+            xdescribe('when user click 3 times', () => {
+                beforeEach(async() => {
                     hobbyList._state.total = 10;
+                    hobbyList._state.items = [ownHobby1,ownHobby1,ownHobby1,ownHobby1];
     
-                    hobbyList._handleFooterClick(event);
-                    hobbyList._handleFooterClick(event);
-                    hobbyList._handleFooterClick(event);
+                    await hobbyList._handleFooterClick(event);
+                    await hobbyList._handleFooterClick(event);
+                    await hobbyList._handleFooterClick(event);
                 });
 
                 it('should call loadHobbies only twice', () => {
-                  expect(loadHobbiesStub.calledTwice).toBeTruthy();  
+                  expect(loadHobbiesSpy.calledTwice).toBeTruthy();  
                 });
 
                 it('should decrease threshold to 4', () => {
+                    expect(hobbyList._state.threshold).toBe(4);
+                });
+            });
+
+            xdescribe('when user licks 6 times', () => {
+                beforeEach(async(done: DoneFn) => {
+                    hobbyList._state.total = 10;
+                    hobbyList._state.items = [
+                        ownHobby1, 
+                        ownHobby2, 
+                        ownHobby3, 
+                        ownHobby4
+                    ];
+                    
+                    await hobbyList._handleFooterClick(event);
+                    await hobbyList._handleFooterClick(event);
+                    await hobbyList._handleFooterClick(event);
+                    await hobbyList._handleFooterClick(event);
+                    done();
+                });
+
+                it('should call loadHobbies only twice', () => {
+                    expect(loadHobbiesSpy.calledTwice).toBeTruthy();  
+                });
+  
+                xit('should decrease threshold to 4', () => {
                     expect(hobbyList._state.threshold).toBe(4);
                 });
             });

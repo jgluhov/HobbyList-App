@@ -43,7 +43,7 @@ export class HobbyListService {
         return await Store.store.get(startIndex, count);
     }
 
-    public async delete(id: string): Promise<number> {
-        return await 5;
+    public async delete(id: string): Promise<Store.StoreResponse> {
+        return await Store.store.remove(id);
     }
 }

@@ -27,25 +27,27 @@ describe('Store: Spec', () => {
 
     describe('@constructor()', () => {
         describe('when we create store', () => {
-            it('should have a clear data array', () => {
-                expect(store.getAll()).toEqual([]);
+            it('should have a clear data array', async() => {
+                const response: StoreResponse = await store.getAll();
+                expect(response.items).toEqual([]);
             });
         });
     });
 
-    describe('#append()', () => {
-        describe('when we call append method', () => {
-            it('should append it to store', () => {
-                store.append(ownHobby1);
+    describe('#create()', () => {
+        describe('when we call create method', () => {
+            it('should create it to store', async () => {
+                await store.create(ownHobby1);
                 expect(store.length()).toBe(1);
             });
 
-            it('should append it aftre previous one', () => {
-                store.append(ownHobby1);
-                store.append(ownHobby2);
+            it('should create it aftre previous one', async() => {
+                await store.create(ownHobby1);
+                await store.create(ownHobby2);
 
-                expect(store.getAll())
-                    .toEqual([ ownHobby1, ownHobby2 ]);
+                const response: StoreResponse = await store.getAll();
+                
+                expect(response.items).toEqual([ ownHobby1, ownHobby2 ]);
             });
         });
     });
@@ -56,7 +58,7 @@ describe('Store: Spec', () => {
 
         beforeEach(() => {
             hobbies = [ ownHobby1, ownHobby2, ownHobby3 ];
-            hobbies.forEach(store.append.bind(store));
+            hobbies.forEach(store.create.bind(store));
         });
 
         describe('when we call remove method', () => {
@@ -109,9 +111,9 @@ describe('Store: Spec', () => {
 
             describe('when our store is not empty', () => {
                 it('should return correct total value', async() => {
-                    store.append(ownHobby1);
-                    store.append(ownHobby2);
-                    store.append(ownHobby3);
+                    store.create(ownHobby1);
+                    store.create(ownHobby2);
+                    store.create(ownHobby3);
 
                     const response: StoreResponse = await store.get();
                     expect(response).toEqual({
@@ -124,13 +126,13 @@ describe('Store: Spec', () => {
 
         describe('when we call get() method with params', () => {
             beforeEach(() => {
-                store.append(ownHobby1);
-                store.append(ownHobby2);
-                store.append(ownHobby3);
-                store.append(ownHobby4);
-                store.append(ownHobby5);
-                store.append(ownHobby6);
-                store.append(friendHobby1);
+                store.create(ownHobby1);
+                store.create(ownHobby2);
+                store.create(ownHobby3);
+                store.create(ownHobby4);
+                store.create(ownHobby5);
+                store.create(ownHobby6);
+                store.create(friendHobby1);
             });
 
             describe('when startIndex is equal to 0 and count equal to 1', () => {

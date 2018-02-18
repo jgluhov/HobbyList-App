@@ -78,12 +78,18 @@ export class HobbyList extends HTMLElement {
         this.$listContent.addEventListener('animationend', this._handleAnimation.bind(this), false);
         this.$listFooter.addEventListener('click', this._handleFooterClick.bind(this), false);
         
-        await this._loadHobbies(0, this._state.threshold);
+        const response: Store.StoreResponse = await this._loadHobbies(0, this._state.threshold);
+        
+        this._updateState(response);
 
         this._render();
     }
 
-    public async _loadHobbies(startIndex: number, count: number): Promise<Store.StoreResponse> {
+    public async _loadHobbies(
+        startIndex: number, 
+        count: number
+    ): Promise<Store.StoreResponse> {
+        console.log('real');
         this._setLoading(true);
         
         const response: Store.StoreResponse = await this.service.get(
@@ -91,6 +97,12 @@ export class HobbyList extends HTMLElement {
             count
         );
         
+        this._setLoading(false);
+
+        return response;
+    }
+
+    public _updateState(response: Store.StoreResponse) {
         this._state = {
             ...this._state,
             items: [
@@ -99,10 +111,6 @@ export class HobbyList extends HTMLElement {
             ],
             total: response.total
         };
-
-        this._setLoading(false);
-
-        return response;
     }
 
     public _setLoading(loading: boolean): void {
@@ -201,15 +209,18 @@ export class HobbyList extends HTMLElement {
         }
 
         if (this._state.threshold < this._state.total) {
-            const loadCount = Math.min(
+            const nextThreshold = Math.min(
                 this._state.threshold + HobbyListConstants.DEFAULT_LENGTH,
                 this._state.total
-            ) - this._state.threshold;
-            
-            this._state.threshold += loadCount;
+            );
+            this._state.threshold += nextThreshold - this._state.threshold;
 
-            await this._loadHobbies(this._state.items.length, loadCount);
-            
+            if (this._state.threshold > this._state.items.length) {
+                const count: number = this._state.threshold - this._state.items.length;
+                const response: Store.StoreResponse = await this._loadHobbies(this._state.items.length, count);
+                
+                this._updateState(response);
+            }
         } else {
             this._state.threshold = this._state.length;
         }
