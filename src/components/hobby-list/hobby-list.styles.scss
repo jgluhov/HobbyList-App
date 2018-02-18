@@ -27,7 +27,6 @@
     font-size: $font-size-small;
     color: $hobby-list__item-color;
     line-height: 25px;
-    display: table;
     opacity: 1;
     
     &:hover {
@@ -35,7 +34,7 @@
     }
 
     &.hobby-list__item--removed {
-        animation: list-item-removed-animation .6s 
+        animation: disappearing .3s 
             cubic-bezier(.55,-0.04,.91,.94) forwards;
     }
 

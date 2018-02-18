@@ -4,6 +4,12 @@
 import { Hobby } from '@models';
 import * as hobbyListConstants from './hobby-list.constants';
 
+
+interface IEvent extends Event {
+    path?: Node[];
+    composedPath?(): Node[];
+}
+
 export class HobbyListService {
     public toElements(hobbies: Hobby[]): DocumentFragment {
         const fragment: DocumentFragment = document.createDocumentFragment();
@@ -23,5 +29,13 @@ export class HobbyListService {
         });
 
         return fragment;
+    }
+    
+    public getPath(e: IEvent): Node[] {
+        return (e.path || (e.composedPath && e.composedPath())) || [];
+    }
+
+    public getElement(e: Event): HTMLElement {
+        return <HTMLElement>this.getPath(e).shift();
     }
 }

@@ -118,6 +118,10 @@ export class HobbyList extends HTMLElement {
     }
 
     public _renderContent(): void {
+        while(this._state.renderingIndex > this._state.threshold) {
+            this._remove(this._state.renderingIndex - 1);
+        }
+
         while(
             this._state.renderingIndex < this._state.threshold && 
             this._state.renderingIndex < this._state.items.length
@@ -165,6 +169,16 @@ export class HobbyList extends HTMLElement {
         this._state.renderingIndex += 1;
     }
 
+    public _remove(indexAt: number) {
+        const el: HTMLLIElement = <HTMLLIElement>this.$listContent
+            .children.item(indexAt);
+
+        if (el) {
+            el.classList.add(HobbyListConstants.LIST_ITEM_REMOVED_CLASS);
+            this._state.renderingIndex -= 1;
+        }
+    }
+
     public _setFooterText(text: string = ''): void {
         this.$listFooter.textContent = text;
     }
@@ -195,7 +209,15 @@ export class HobbyList extends HTMLElement {
         this._render();
     }
 
-    public _handleAnimationEnd(e): void {
-        
+    public _handleAnimationEnd(e: AnimationEvent): void {
+        const el: HTMLElement = this.service.getElement(e);
+
+        if (e.animationName === 'appearing') {
+            el.classList.remove(HobbyListConstants.LIST_ITEM_INSERTED_CLASS);
+        }
+
+        if (e.animationName === 'disappearing') {
+            el.parentElement.removeChild(el);
+        }
     }
  }
