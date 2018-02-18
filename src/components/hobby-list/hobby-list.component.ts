@@ -9,7 +9,6 @@ import { HobbyListService } from './hobby-list.service';
 
 import styles from './hobby-list.styles.scss';
 import template from './hobby-list.template.html';
-import { Hobby } from '@models';
 
 type HobbyListState = {
     threshold: number;
@@ -71,29 +70,27 @@ export class HobbyList extends HTMLElement {
     }
 
     public async initiate(): Promise<void> {
-        this.$listContent = this._shadowRoot
-            .querySelector(HobbyListConstants.CONTENT_QUERY);
-        this.$listFooter = this._shadowRoot
-            .querySelector(HobbyListConstants.FOOTER_QUERY);
+        this.$listContent = this._shadowRoot.querySelector(HobbyListConstants.CONTENT_QUERY);        
+        this.$listFooter = this._shadowRoot.querySelector(HobbyListConstants.FOOTER_QUERY);
         
-        this.$listContent.parentElement
-            .classList.add(`hobby-list--${this._state.belonging}`);
+        this.$listContent.parentElement.classList.add(`hobby-list--${this._state.belonging}`);
+        
+        this.$listContent.addEventListener('animationend', this._handleAnimationEnd.bind(this), false);
+        this.$listFooter.addEventListener('click', this._handleFooterClick.bind(this), false);
+        
+        await this._loadHobbies(0, this._state.threshold);
 
-        this.$listContent.addEventListener('animationend', this._handleAnimationEnd);
-        this.$listFooter.addEventListener('click', this._handleFooterClick);
-
-        await this.loadHobbies();
         this._render();
     }
 
-    public async loadHobbies(): Promise<void> {
+    public async _loadHobbies(startIndex: number, count: number): Promise<Store.StoreResponse> {
         this._setLoading(true);
-
+        
         const response: Store.StoreResponse = await Store.store.get(
-            this._state.renderingIndex,
-            this._state.threshold
+            startIndex,
+            count
         );
-
+        
         this._state = {
             ...this._state,
             items: [
@@ -104,6 +101,8 @@ export class HobbyList extends HTMLElement {
         };
 
         this._setLoading(false);
+
+        return response;
     }
 
     public _setLoading(loading: boolean): void {
@@ -123,7 +122,7 @@ export class HobbyList extends HTMLElement {
             this._state.renderingIndex < this._state.threshold && 
             this._state.renderingIndex < this._state.items.length
         ) {
-            const hobby: Hobby = this._state.items[this._state.renderingIndex];
+            const hobby: Models.Hobby = this._state.items[this._state.renderingIndex];
             this._insert(this._state.renderingIndex, hobby);
         }
     }
@@ -155,7 +154,7 @@ export class HobbyList extends HTMLElement {
         }
     }
 
-    public _insert(indexAt: number, hobby: Hobby) {
+    public _insert(indexAt: number, hobby: Models.Hobby) {
         const prevEl: HTMLLIElement = <HTMLLIElement>this.$listContent
             .children.item(indexAt);
         
@@ -174,14 +173,29 @@ export class HobbyList extends HTMLElement {
         this.$listFooter.hidden = hidden;
     }
 
-    public _handleFooterClick(e: MouseEvent): void {
-        if (this._state.items.length) {
+    public async _handleFooterClick(e: MouseEvent): Promise<void> {
+        if (!this._state.total) {
             return;
         }
 
+        if (this._state.threshold < this._state.total) {
+            const loadCount = Math.min(
+                this._state.threshold + HobbyListConstants.DEFAULT_LENGTH,
+                this._state.total
+            ) - this._state.threshold;
+            
+            this._state.threshold += loadCount;
+
+            await this._loadHobbies(this._state.items.length, loadCount);
+            
+        } else {
+            this._state.threshold = this._state.length;
+        }
+
+        this._render();
     }
 
     public _handleAnimationEnd(e): void {
-        console.log(e);
+        
     }
  }

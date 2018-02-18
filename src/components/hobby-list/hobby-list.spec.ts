@@ -5,6 +5,7 @@ import { Belonging, Hobby } from '@models';
 import * as Components from '@components';
 import * as Models from '@models';
 import * as HobbyListConstants from '@components'
+import * as sinon from 'sinon';
 
 describe('HobbyList: Spec', () => {
     let hobbyList: Components.HobbyList;
@@ -17,8 +18,11 @@ describe('HobbyList: Spec', () => {
     let ownHobby6: Hobby;
     let friendHobby1: Hobby;
     let friendHobby2: Hobby;
+    let sandobox: sinon.SinonSandbox;
 
     beforeEach(() => {
+        sandobox = sinon.createSandbox();
+
         ownHobby1 = new Hobby('own-hobby-1');
         ownHobby2 = new Hobby('own-hobby-2');
         ownHobby3 = new Hobby('own-hobby-3');
@@ -28,6 +32,10 @@ describe('HobbyList: Spec', () => {
         friendHobby1 = new Hobby('friend-hobby-1', Belonging.FRIEND);
         friendHobby2 = new Hobby('friend-hobby-2', Belonging.FRIEND);
     })
+
+    afterEach(() => {
+        sandobox.restore();
+    });
 
     beforeEach(async() => {
         compIndex += 1;
@@ -343,8 +351,127 @@ describe('HobbyList: Spec', () => {
     });
 
     describe('#_handleFooterClick()', () => {
+        let event: MouseEvent;
+        let loadHobbiesStub: sinon.SinonStub;
         beforeEach(() => {
+            event = new MouseEvent('click');
             hobbyList._state.threshold = 4;
+            loadHobbiesStub = sinon.stub(hobbyList, '_loadHobbies').returns(() => {
+                return new Promise(() => {});
+            })
         });
+
+        describe('when there are no items in state', () => {
+            beforeEach(() => {
+                hobbyList._state.total = 0;
+                
+                hobbyList._handleFooterClick(event);
+            });
+
+            it('should not increase threshold', () => {
+                expect(hobbyList._state.threshold).toBe(4);
+            });
+
+            it('should not call loadHobbies', () => {
+                expect(loadHobbiesStub.called).toBeFalsy();
+            });
+        });
+
+        describe('when there are less items then length', () => {
+            beforeEach(() => {
+                hobbyList._state.total = 3;
+                
+                hobbyList._handleFooterClick(event);
+            });
+
+            it('should not increase threshold', () => { 
+                expect(hobbyList._state.threshold).toBe(4);
+            });
+
+            it('should not call loadHobbies', () => {
+                expect(loadHobbiesStub.called).toBeFalsy();
+            });
+        });
+
+        describe('when total and threshold are equal', () => {
+            beforeEach(() => {
+                hobbyList._state.total = 4;
+
+                hobbyList._handleFooterClick(event);
+            });
+
+            it('should not increase threshold', () => {
+                expect(hobbyList._state.threshold).toBe(4);
+            });
+
+            it('should not call loadHobbies', () => {
+                expect(loadHobbiesStub.called).toBeFalsy();
+            });
+        });
+
+        describe('when there are more items then threshold', () => {
+            describe('when we click once', () => {
+                beforeEach(() => {
+                    hobbyList._state.total = 10;
+    
+                    hobbyList._handleFooterClick(event);
+                });
+    
+                it('should increase threshold', () => {
+                    expect(hobbyList._state.threshold).toBe(8);
+                });
+    
+                it('should call loadHobbies', () => {
+                    expect(loadHobbiesStub.called).toBeTruthy();
+                });
+
+                it('should call loadHobbies with correct params', () => {
+                    expect(loadHobbiesStub.withArgs(4, 2)).toBeTruthy();
+                });
+            });
+
+            describe('then we click twice', () => {
+                beforeEach(() => {
+                    hobbyList._state.total = 10;
+    
+                    hobbyList._handleFooterClick(event);
+                    hobbyList._handleFooterClick(event);
+                });
+
+                it('should increase threshold to 10', () => {
+                    expect(hobbyList._state.threshold).toBe(10);
+                });
+
+                it('should call loadHobbies twice', () => {
+                    expect(loadHobbiesStub.calledTwice).toBeTruthy();
+                })
+
+                it('should call loadHobbies firstly with correct params', () => {
+                    expect(loadHobbiesStub.args[0][1]).toBe(4);
+                });
+
+                it('should call loadHobbies secondly with correct params', () => {
+                    expect(loadHobbiesStub.args[1][1]).toBe(2);
+                });
+            });
+
+            describe('when user click 3 times', () => {
+                beforeEach(() => {
+                    hobbyList._state.total = 10;
+    
+                    hobbyList._handleFooterClick(event);
+                    hobbyList._handleFooterClick(event);
+                    hobbyList._handleFooterClick(event);
+                });
+
+                it('should call loadHobbies only twice', () => {
+                  expect(loadHobbiesStub.calledTwice).toBeTruthy();  
+                });
+
+                it('should decrease threshold to 4', () => {
+                    expect(hobbyList._state.threshold).toBe(4);
+                });
+            });
+        })
     });
 });

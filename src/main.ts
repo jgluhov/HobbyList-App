@@ -25,6 +25,10 @@ function initiateStore(): void {
     store.append(new Hobby('own-hobby-4'));
     store.append(new Hobby('own-hobby-5'));
     store.append(new Hobby('own-hobby-6'));
+    store.append(new Hobby('own-hobby-7'));
+    store.append(new Hobby('own-hobby-8'));
+    store.append(new Hobby('own-hobby-9'));
+    store.append(new Hobby('own-hobby-10'));
 }
 
 function handleHobbyCreate(e: CustomEvent): void {
