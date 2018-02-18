@@ -3,7 +3,7 @@
  */
 import { Hobby } from '@models';
 import * as hobbyListConstants from './hobby-list.constants';
-
+import * as Store from '@store';
 
 interface IEvent extends Event {
     path?: Node[];
@@ -37,5 +37,13 @@ export class HobbyListService {
 
     public getElement(e: Event): HTMLElement {
         return <HTMLElement>this.getPath(e).shift();
+    }
+
+    public async get(startIndex: number, count: number): Promise<Store.StoreResponse> {
+        return await Store.store.get(startIndex, count);
+    }
+
+    public async delete(id: string): Promise<number> {
+        return await 5;
     }
 }

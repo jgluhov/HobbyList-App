@@ -75,7 +75,7 @@ export class HobbyList extends HTMLElement {
         
         this.$listContent.parentElement.classList.add(`hobby-list--${this._state.belonging}`);
         
-        this.$listContent.addEventListener('animationend', this._handleAnimationEnd.bind(this), false);
+        this.$listContent.addEventListener('animationend', this._handleAnimation.bind(this), false);
         this.$listFooter.addEventListener('click', this._handleFooterClick.bind(this), false);
         
         await this._loadHobbies(0, this._state.threshold);
@@ -86,7 +86,7 @@ export class HobbyList extends HTMLElement {
     public async _loadHobbies(startIndex: number, count: number): Promise<Store.StoreResponse> {
         this._setLoading(true);
         
-        const response: Store.StoreResponse = await Store.store.get(
+        const response: Store.StoreResponse = await this.service.get(
             startIndex,
             count
         );
@@ -178,7 +178,9 @@ export class HobbyList extends HTMLElement {
         }
 
         if (force) {
-            console.log('should remove from store');
+            await this.service.delete(el.id);
+            this._state.items = this._state.items
+                .filter((hobby: Models.Hobby) => hobby.id !== el.id);
         } else {
             el.classList.add(HobbyListConstants.LIST_ITEM_REMOVED_CLASS);
             this._state.renderingIndex -= 1;
@@ -215,7 +217,7 @@ export class HobbyList extends HTMLElement {
         this._render();
     }
 
-    public _handleAnimationEnd(e: AnimationEvent): void {
+    public _handleAnimation(e: AnimationEvent): void {
         const el: HTMLElement = this.service.getElement(e);
 
         if (e.animationName === 'appearing') {

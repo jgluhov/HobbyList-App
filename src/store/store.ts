@@ -22,10 +22,15 @@ export class Store {
         ];
     }
 
-    public remove(id: string): void {
-        this._data = this._data.filter(
-            (hobby: Hobby) => hobby.id !== id
-        );
+    public remove(id: string): Promise<StoreResponse>  {
+        return new Promise((resolve: PromiseResolve<StoreResponse>): void => {
+            this._data = this._data.filter((hobby: Hobby) => hobby.id !== id);
+            
+            resolve({
+                items: [...this._data],
+                total: this._data.length
+            })
+        });
     }
 
     public get(startIndex: number = 0, count: number = 0, belonging: string = Belonging.OWN): Promise<StoreResponse> {

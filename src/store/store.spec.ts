@@ -52,6 +52,8 @@ describe('Store: Spec', () => {
 
     describe('#remove()', () => {
         let hobbies: Hobby[];
+        let response: StoreResponse;
+
         beforeEach(() => {
             hobbies = [ ownHobby1, ownHobby2, ownHobby3 ];
             hobbies.forEach(store.append.bind(store));
@@ -59,17 +61,39 @@ describe('Store: Spec', () => {
 
         describe('when we call remove method', () => {
             describe('when we pass wrong id', () => {
-                it('should not remove any', () => {
-                    store.remove('some');
+                beforeEach(async() => {
+                    response = await store.remove('unknownId');
+                });
 
+                it('should return correct response total', () => {
+                    expect(response.total).toBe(3);
+                });
+
+                it('should return correct response items', () => {
+                    expect(response.items).toEqual(hobbies);
+                })
+
+                it('should not remove any', async() => {
                     expect(store.length()).toBe(3);
                 });
             });
 
             describe('when we remove first element', () => {
-                it('should remove it from store', () => {
-                    store.remove(hobbies.shift().id);
+                beforeEach(async() => {
+                    response = await store.remove(hobbies.shift().id);
+                });
 
+                it('should return correct response total', () => {
+                    expect(response.total).toBe(2);
+                });
+
+                it('should return correct response items', () => {
+                    expect(response.items).toEqual([
+                        ownHobby2, ownHobby3
+                    ]);
+                });
+
+                it('should remove it from store', () => {
                     expect(store.length()).toBe(2);
                 });
             });
@@ -141,8 +165,8 @@ describe('Store: Spec', () => {
 
             describe('when we remove hobby-1 and hobby 5', () => {
                 it('should return correct response', async() => {
-                    store.remove(ownHobby1.id);
-                    store.remove(ownHobby5.id);
+                    await store.remove(ownHobby1.id);
+                    await store.remove(ownHobby5.id);
 
                     const response: StoreResponse = await store.get(0, 4);
                     expect(response).toEqual({

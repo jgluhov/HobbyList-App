@@ -351,14 +351,7 @@ describe('HobbyList: Spec', () => {
 
     describe('_remove()', () => {
         let insertedElem: HTMLLIElement;
-        
-        beforeEach(() => {
-            jasmine.clock().install();
-        })
-
-        afterEach(function() {
-            jasmine.clock().uninstall();
-        });
+        let classList: DOMTokenList;
 
         describe('when we are trying to remove element by incorrect index', () => {
             beforeEach(() => {
@@ -374,7 +367,7 @@ describe('HobbyList: Spec', () => {
         });
 
         describe('when we are trying to remove element by correct index', () => {
-            let classList: DOMTokenList;
+            
             beforeEach(() => {
                 insertedElem = <HTMLLIElement>hobbyList.service
                     .toElements([ownHobby1]).firstElementChild;
@@ -386,7 +379,7 @@ describe('HobbyList: Spec', () => {
 
             it('should not remove anything', () => {
                 hobbyList._remove(0);
-                
+
                 expect(hobbyList._state.renderingIndex).toBe(0);
             });
 
@@ -395,12 +388,31 @@ describe('HobbyList: Spec', () => {
 
                 expect(classList.contains('hobby-list__item--removed')).toBeTruthy();
             });
-        })
+        });
+
+        describe('when we pass force param', () => {
+            beforeEach(() => {
+                hobbyList._state.items = [ownHobby1];
+                insertedElem = <HTMLLIElement>hobbyList.service
+                    .toElements([ownHobby1]).firstElementChild;
+
+                hobbyList.$listContent.appendChild(insertedElem);
+                classList = hobbyList.$listContent.firstElementChild.classList;
+                hobbyList._state.renderingIndex = 1;
+            });
+
+            it('should remove hobby from state', async() => {
+                await hobbyList._remove(0, true);
+                
+                expect(hobbyList._state.items).toEqual([]);
+            });
+        });
     });
 
     describe('#_handleFooterClick()', () => {
         let event: MouseEvent;
         let loadHobbiesStub: sinon.SinonStub;
+
         beforeEach(() => {
             event = new MouseEvent('click');
             hobbyList._state.threshold = 4;
