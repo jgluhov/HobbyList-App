@@ -4,7 +4,6 @@
 import { Belonging, Hobby } from '@models';
 import * as Components from '@components';
 import * as Models from '@models';
-import * as HobbyListConstants from '@components'
 import * as sinon from 'sinon';
 
 describe('HobbyList: Spec', () => {
@@ -348,6 +347,55 @@ describe('HobbyList: Spec', () => {
                 });
             });
         });
+    });
+
+    describe('_remove()', () => {
+        let insertedElem: HTMLLIElement;
+        
+        beforeEach(() => {
+            jasmine.clock().install();
+        })
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
+        });
+
+        describe('when we are trying to remove element by incorrect index', () => {
+            beforeEach(() => {
+                insertedElem = <HTMLLIElement>hobbyList.service
+                    .toElements([ownHobby1]).firstElementChild;
+                hobbyList.$listContent.appendChild(insertedElem);
+            });
+
+            it('should not remove anything', () => {
+                hobbyList._remove(1);
+                expect(hobbyList.$listContent.contains(insertedElem)).toBeTruthy();
+            });
+        });
+
+        describe('when we are trying to remove element by correct index', () => {
+            let classList: DOMTokenList;
+            beforeEach(() => {
+                insertedElem = <HTMLLIElement>hobbyList.service
+                    .toElements([ownHobby1]).firstElementChild;
+
+                hobbyList.$listContent.appendChild(insertedElem);
+                classList = hobbyList.$listContent.firstElementChild.classList;
+                hobbyList._state.renderingIndex = 1;
+            });
+
+            it('should not remove anything', () => {
+                hobbyList._remove(0);
+                
+                expect(hobbyList._state.renderingIndex).toBe(0);
+            });
+
+            it('should add remove class to el', () => {        
+                hobbyList._remove(0);
+
+                expect(classList.contains('hobby-list__item--removed')).toBeTruthy();
+            });
+        })
     });
 
     describe('#_handleFooterClick()', () => {

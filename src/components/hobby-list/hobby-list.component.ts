@@ -169,11 +169,17 @@ export class HobbyList extends HTMLElement {
         this._state.renderingIndex += 1;
     }
 
-    public _remove(indexAt: number) {
+    public async _remove(indexAt: number, force?: boolean) {
         const el: HTMLLIElement = <HTMLLIElement>this.$listContent
             .children.item(indexAt);
 
-        if (el) {
+        if (!el) {
+            return;
+        }
+
+        if (force) {
+            console.log('should remove from store');
+        } else {
             el.classList.add(HobbyListConstants.LIST_ITEM_REMOVED_CLASS);
             this._state.renderingIndex -= 1;
         }
