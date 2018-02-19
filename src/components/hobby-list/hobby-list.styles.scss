@@ -15,6 +15,21 @@
     margin: 0;
     padding: 0;
     list-style-type: none;
+
+    &.hobby-list__content--loading {
+        &::after {
+            content: 'Загрузка...';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: $hobby-list-loading-color;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
 }
 
 :host .hobby-list__icon {

@@ -6,6 +6,7 @@ $font-family-base: Arial, Helvetica, sans-serif;
 // Colors
 $color-green: green;
 $color-orange: #fba56d;
+$color-default: rgb(36, 36, 36);
 
 // Page
 $page-width: 960px;
@@ -29,6 +30,8 @@ $hobby-form__btn-color: rgb(70, 69, 69);
 $hobby-list__icon-size: 10px;
 $hobby-list__item-color: $color-green;
 $hobby-list__footer-color: $color-orange;
+
+$hobby-list-loading-color: $color-default;
 
 // Media queries
 $mq-retina: "(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)";

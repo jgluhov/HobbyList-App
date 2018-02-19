@@ -27,11 +27,17 @@ export class Store {
         }
     }
 
+    public delay(ms: number): Promise<void> {
+        return new Promise((resolve: PromiseResolve<void>) => setTimeout(resolve, ms));
+    }
+
     public async get(startIndex: number = 0, count: number = 0, belonging: string = Belonging.OWN): Promise<StoreResponse> { 
         const filteredHobbies: Hobby[] = this._data.filter((hobby: Hobby) => hobby.belonging === belonging);
         const items: Hobby[] = filteredHobbies.slice(startIndex, startIndex + count);
 
-        return await {
+        await this.delay(1000);
+
+        return {
             items,
             total: filteredHobbies.length
         };
