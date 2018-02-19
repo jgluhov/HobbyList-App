@@ -145,7 +145,8 @@ export class HobbyList extends HTMLElement {
                 this._setFooterText();
             } else {
                 this._hiddenFooter(false);
-                const remainingCount: number = this._state.total - this._state.threshold;
+                const remainingCount: number = this._state.total -
+                    Math.min(this._state.threshold, this._state.renderingIndex);
 
                 if (remainingCount > 0) {
                     this._setFooterText(
@@ -217,8 +218,9 @@ export class HobbyList extends HTMLElement {
         }
 
         if (this._state.threshold < this._state.total) {
+            const startIndex: number = Math.min(this._state.threshold, this._state.renderingIndex);
             const next: number = Math.min(
-                this._state.threshold + HobbyListConstants.THRESHOLD_STEP,
+                startIndex + HobbyListConstants.THRESHOLD_STEP,
                 this._state.total
             );
             this._state.threshold += next - this._state.threshold;
@@ -236,22 +238,26 @@ export class HobbyList extends HTMLElement {
         this._render();
     }
 
-    public _handleListClick(e: MouseEvent): void {
+    public async _handleListClick(e: MouseEvent): Promise<void> {
         const target: HTMLElement = this.service.getElement(e);
 
         if (this.service.is(target, 'span') &&
             this._state.belonging === Belonging.OWN
         ) {
-            this._handleRemove(target.parentElement);
+            await Store.delete(target.parentElement.id);
+            await this._handleRemove(target.parentElement);
         }
+
+        this._render();
     }
 
-    public async _handleRemove(el: HTMLElement): Promise<void> {
-        const response: StoreResponse = await Store.delete(el.id);
-        this._updateState(response);
-        console.log(response);
-
-        console.log('remove');
+    public _handleRemove(el: HTMLElement): void {
+        this._state.total -= 1;
+        this._state.renderingIndex -= 1;
+        this._state.items = this._state.items.filter((hobby: Hobby) => {
+            return hobby.id !== el.id;
+        });
+        el.classList.add(HobbyListConstants.LIST_ITEM_REMOVED_CLASS);
     }
 
     public _handleAnimation(e: AnimationEvent): void {

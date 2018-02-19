@@ -12,6 +12,8 @@ interface IStore {
     _clear(): void;
 }
 
+const DELAY_MS: number = DEVELOPMENT ? 0 : 1000;
+
 export type StoreResponse = {
     items: Hobby[];
     total: number;
@@ -35,6 +37,8 @@ export const Store: IStore = ((): IStore => {
                 hobby
             ];
 
+            await delay(1000);
+
             return Promise.resolve({
                 items: [ ..._data ],
                 total: _data.length
@@ -49,7 +53,7 @@ export const Store: IStore = ((): IStore => {
             const filteredHobbies: Hobby[] = _data.filter((hobby: Hobby) => hobby.belonging === belonging);
             const items: Hobby[] = filteredHobbies.slice(startIndex, startIndex + count);
 
-            await delay(1000);
+            await delay(DELAY_MS);
 
             return Promise.resolve({
                 items,
@@ -62,7 +66,7 @@ export const Store: IStore = ((): IStore => {
                 .filter((hobby: Hobby) => hobby.id !== id)
                 .filter((hobby: Hobby) => hobby.belonging === belonging);
 
-            await delay(1000);
+            await delay(DELAY_MS);
 
             return Promise.resolve({
                 items: [],
@@ -70,7 +74,9 @@ export const Store: IStore = ((): IStore => {
             });
         },
 
-        getAll(): Promise<StoreResponse> {
+        async getAll(): Promise<StoreResponse> {
+            await delay(DELAY_MS);
+
             return Promise.resolve({
                 items: [ ..._data ],
                 total: _data.length

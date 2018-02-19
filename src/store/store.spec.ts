@@ -129,14 +129,14 @@ xdescribe('Store: Spec', () => {
         });
 
         describe('when we call get() method with params', () => {
-            beforeEach(() => {
-                Store.create(ownHobby1);
-                Store.create(ownHobby2);
-                Store.create(ownHobby3);
-                Store.create(ownHobby4);
-                Store.create(ownHobby5);
-                Store.create(ownHobby6);
-                Store.create(friendHobby1);
+            beforeEach(async() => {
+                await Store.create(ownHobby1);
+                await Store.create(ownHobby2);
+                await Store.create(ownHobby3);
+                await Store.create(ownHobby4);
+                await Store.create(ownHobby5);
+                await Store.create(ownHobby6);
+                await Store.create(friendHobby1);
             });
 
             describe('when startIndex is equal to 0 and count equal to 1', () => {

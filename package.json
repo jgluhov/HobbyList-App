@@ -4,8 +4,8 @@
   "description": "HobbyList implementation for some IT company of Russia",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server --inline",
-    "test": "./node_modules/.bin/karma start"
+    "start": "development=true ./node_modules/.bin/webpack-dev-server --inline",
+    "test": "development=true ./node_modules/.bin/karma start"
   },
   "repository": {
     "type": "git",

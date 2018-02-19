@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -98,5 +99,8 @@ module.exports = {
             },
         }),
         new ExtractTextPlugin('css/bundle.css'),
+        new webpack.DefinePlugin({
+            DEVELOPMENT: JSON.stringify(process.env.development)
+        })
     ],
 };
