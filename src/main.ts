@@ -3,7 +3,7 @@
  */
 import { HobbyForm, HobbyList } from '@components';
 import { Hobby } from '@models';
-import { store } from '@store';
+import { Store } from '@store';
 import './styles/main.scss';
 
 async function main(): Promise<void> {
@@ -19,20 +19,20 @@ async function main(): Promise<void> {
 }
 
 function initiateStore(): void {
-    store.create(new Hobby('own-hobby-1'));
-    store.create(new Hobby('own-hobby-2'));
-    store.create(new Hobby('own-hobby-3'));
-    store.create(new Hobby('own-hobby-4'));
-    store.create(new Hobby('own-hobby-5'));
-    store.create(new Hobby('own-hobby-6'));
-    store.create(new Hobby('own-hobby-7'));
-    store.create(new Hobby('own-hobby-8'));
-    store.create(new Hobby('own-hobby-9'));
-    store.create(new Hobby('own-hobby-10'));
+    Store.create(new Hobby('own-hobby-1'));
+    Store.create(new Hobby('own-hobby-2'));
+    Store.create(new Hobby('own-hobby-3'));
+    Store.create(new Hobby('own-hobby-4'));
+    Store.create(new Hobby('own-hobby-5'));
+    Store.create(new Hobby('own-hobby-6'));
+    Store.create(new Hobby('own-hobby-7'));
+    Store.create(new Hobby('own-hobby-8'));
+    Store.create(new Hobby('own-hobby-9'));
+    Store.create(new Hobby('own-hobby-10'));
 }
 
 function handleHobbyCreate(e: CustomEvent): void {
-    store.create(e.detail.data);
+    Store.create(e.detail.data);
 }
 
 addEventListener('load', main);

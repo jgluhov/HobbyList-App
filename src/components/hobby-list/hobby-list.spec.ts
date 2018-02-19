@@ -3,7 +3,7 @@
  */
 import { Belonging, Hobby } from '@models';
 import * as Components from '@components';
-import * as Store from '@store';
+import { Store, StoreResponse } from '@store';
 import * as Models from '@models';
 import * as sinon from 'sinon';
 
@@ -439,7 +439,7 @@ describe('HobbyList: Spec', () => {
             loadHobbiesStub = sandobox.stub(hobbyList, '_loadHobbies')
                 .callsFake(
                     async(startIndex: number, count: number) => {
-                        const response: Store.StoreResponse = {
+                        const response: StoreResponse = {
                             items: [ ...generateHobbies(count) ],
                             total:  10
                         };

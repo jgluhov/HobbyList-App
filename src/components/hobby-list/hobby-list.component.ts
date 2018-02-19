@@ -2,7 +2,7 @@
  * HobbyListApp | Hobby List Component
  */
 import * as Models from '@models';
-import * as Store from '@store';
+import { Store, StoreResponse } from '@store';
 import * as Utils from '@utils';
 import * as HobbyListConstants from './hobby-list.constants';
 import { HobbyListService } from './hobby-list.service';
@@ -78,7 +78,7 @@ export class HobbyList extends HTMLElement {
         this.$listContent.addEventListener('animationend', this._handleAnimation.bind(this), false);
         this.$listFooter.addEventListener('click', this._handleFooterClick.bind(this), false);
         
-        const response: Store.StoreResponse = await this._loadHobbies(0, this._state.threshold);
+        const response: StoreResponse = await this._loadHobbies(0, this._state.threshold);
         
         this._updateState(response);
 
@@ -88,20 +88,17 @@ export class HobbyList extends HTMLElement {
     public async _loadHobbies(
         startIndex: number, 
         count: number
-    ): Promise<Store.StoreResponse> {        
+    ): Promise<StoreResponse> {        
         this._setLoading(true);
         
-        const response: Store.StoreResponse = await this.service.get(
-            startIndex,
-            count
-        );
+        const response: StoreResponse = await Store.get(startIndex, count);
         
         this._setLoading(false);
 
         return response;
     }
 
-    public _updateState(response: Store.StoreResponse) {
+    public _updateState(response: StoreResponse) {
         this._state = {
             ...this._state,
             items: [
@@ -185,7 +182,7 @@ export class HobbyList extends HTMLElement {
         }
 
         if (force) {
-            await this.service.delete(el.id);
+            await Store.delete(el.id);
             this._state.items = this._state.items
                 .filter((hobby: Models.Hobby) => hobby.id !== el.id);
         } else {
@@ -216,7 +213,7 @@ export class HobbyList extends HTMLElement {
 
             if (this._state.threshold > this._state.items.length) {
                 const count: number = this._state.threshold - this._state.items.length;
-                const response: Store.StoreResponse = await this._loadHobbies(this._state.items.length, count);
+                const response: StoreResponse = await this._loadHobbies(this._state.items.length, count);
                 
                 this._updateState(response);
             }

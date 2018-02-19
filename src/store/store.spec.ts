@@ -5,7 +5,6 @@ import { Belonging, Hobby } from '@models';
 import { Store, StoreResponse } from '@store';
 
 describe('Store: Spec', () => {
-    let store: Store;
     let ownHobby1: Hobby;
     let ownHobby2: Hobby;
     let ownHobby3: Hobby;
@@ -15,7 +14,6 @@ describe('Store: Spec', () => {
     let friendHobby1: Hobby;
 
     beforeEach(() => {
-        store = new Store();
         ownHobby1 = new Hobby('own-hobby-1');
         ownHobby2 = new Hobby('own-hobby-2');
         ownHobby3 = new Hobby('own-hobby-3');
@@ -25,31 +23,37 @@ describe('Store: Spec', () => {
         friendHobby1 = new Hobby('friend-hobby-1', Belonging.FRIEND);
     });
 
+    afterEach(() => {
+        Store._clear();
+    });
+
     describe('@constructor()', () => {
         describe('when we create store', () => {
             it('should have a clear data array', async() => {
-                const response: StoreResponse = await store.getAll();
+                const response: StoreResponse = await Store.getAll();
                 expect(response.items).toEqual([]);
             });
         });
     });
 
     describe('#create()', () => {
-        describe('when we call create method', () => {
+        describe('when we call create method once', () => {
             it('should create it to store', async () => {
-                await store.create(ownHobby1);
-                expect(store.length()).toBe(1);
+                await Store.create(ownHobby1);
+                expect(Store.length()).toBe(1);
             });
+        });
 
+        describe('when we call create method twice', () => {
             it('should create it aftre previous one', async() => {
-                await store.create(ownHobby1);
-                await store.create(ownHobby2);
+                await Store.create(ownHobby1);
+                await Store.create(ownHobby2);
 
-                const response: StoreResponse = await store.getAll();
+                const response: StoreResponse = await Store.getAll();
                 
                 expect(response.items).toEqual([ ownHobby1, ownHobby2 ]);
             });
-        });
+        })
     });
 
     describe('#remove()', () => {
@@ -58,13 +62,13 @@ describe('Store: Spec', () => {
 
         beforeEach(() => {
             hobbies = [ ownHobby1, ownHobby2, ownHobby3 ];
-            hobbies.forEach(store.create.bind(store));
+            hobbies.forEach(Store.create.bind(Store));
         });
 
         describe('when we call remove method', () => {
             describe('when we pass wrong id', () => {
                 beforeEach(async() => {
-                    response = await store.remove('unknownId');
+                    response = await Store.delete('unknownId');
                 });
 
                 it('should return correct response total', () => {
@@ -76,13 +80,13 @@ describe('Store: Spec', () => {
                 })
 
                 it('should not remove any', async() => {
-                    expect(store.length()).toBe(3);
+                    expect(Store.length()).toBe(3);
                 });
             });
 
             describe('when we remove first element', () => {
                 beforeEach(async() => {
-                    response = await store.remove(hobbies.shift().id);
+                    response = await Store.delete(hobbies.shift().id);
                 });
 
                 it('should return correct response total', () => {
@@ -95,8 +99,8 @@ describe('Store: Spec', () => {
                     ]);
                 });
 
-                it('should remove it from store', () => {
-                    expect(store.length()).toBe(2);
+                it('should remove it from Store', () => {
+                    expect(Store.length()).toBe(2);
                 });
             });
         });
@@ -105,17 +109,17 @@ describe('Store: Spec', () => {
     describe('#get()', () => {
         describe('when we call get() method without params', () => {
             it('should return promisable object', () => {
-                expect(store.get())
+                expect(Store.get())
                     .toEqual(jasmine.any(Promise));
             });
 
-            describe('when our store is not empty', () => {
+            describe('when our Store is not empty', () => {
                 it('should return correct total value', async() => {
-                    store.create(ownHobby1);
-                    store.create(ownHobby2);
-                    store.create(ownHobby3);
+                    Store.create(ownHobby1);
+                    Store.create(ownHobby2);
+                    Store.create(ownHobby3);
 
-                    const response: StoreResponse = await store.get();
+                    const response: StoreResponse = await Store.get();
                     expect(response).toEqual({
                         items: [],
                         total: 3
@@ -126,18 +130,18 @@ describe('Store: Spec', () => {
 
         describe('when we call get() method with params', () => {
             beforeEach(() => {
-                store.create(ownHobby1);
-                store.create(ownHobby2);
-                store.create(ownHobby3);
-                store.create(ownHobby4);
-                store.create(ownHobby5);
-                store.create(ownHobby6);
-                store.create(friendHobby1);
+                Store.create(ownHobby1);
+                Store.create(ownHobby2);
+                Store.create(ownHobby3);
+                Store.create(ownHobby4);
+                Store.create(ownHobby5);
+                Store.create(ownHobby6);
+                Store.create(friendHobby1);
             });
 
             describe('when startIndex is equal to 0 and count equal to 1', () => {
                 it('should return correct response', async() => {
-                    const response: StoreResponse = await store.get(0, 1);
+                    const response: StoreResponse = await Store.get(0, 1);
                     expect(response).toEqual({
                         items: [ownHobby1],
                         total: 6
@@ -147,7 +151,7 @@ describe('Store: Spec', () => {
 
             describe('when startIndex is equal to -4 and count equal to -1', () => {
                 it('should return correct response', async() => {
-                    const response: StoreResponse = await store.get(4, 1);
+                    const response: StoreResponse = await Store.get(4, 1);
                     expect(response).toEqual({
                         items: [ownHobby5],
                         total: 6
@@ -157,7 +161,7 @@ describe('Store: Spec', () => {
 
             describe('when startIndex is equal to 6 and count equal to 1', () => {
                 it('should return correct response', async() => {
-                    const response: StoreResponse = await store.get(6, 1);
+                    const response: StoreResponse = await Store.get(6, 1);
                     expect(response).toEqual({
                         items: [],
                         total: 6
@@ -165,12 +169,12 @@ describe('Store: Spec', () => {
                 });
             });
 
-            describe('when we remove hobby-1 and hobby 5', () => {
+            describe('when we delete hobby-1 and hobby 5', () => {
                 it('should return correct response', async() => {
-                    await store.remove(ownHobby1.id);
-                    await store.remove(ownHobby5.id);
+                    await Store.delete(ownHobby1.id);
+                    await Store.delete(ownHobby5.id);
 
-                    const response: StoreResponse = await store.get(0, 4);
+                    const response: StoreResponse = await Store.get(0, 4);
                     expect(response).toEqual({
                         items: [ownHobby2, ownHobby3, ownHobby4, ownHobby6],
                         total: 4
