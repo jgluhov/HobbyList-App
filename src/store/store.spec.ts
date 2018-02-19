@@ -4,7 +4,7 @@
 import { Belonging, Hobby } from '@models';
 import { Store, StoreResponse } from '@store';
 
-describe('Store: Spec', () => {
+xdescribe('Store: Spec', () => {
     let ownHobby1: Hobby;
     let ownHobby2: Hobby;
     let ownHobby3: Hobby;
@@ -50,10 +50,10 @@ describe('Store: Spec', () => {
                 await Store.create(ownHobby2);
 
                 const response: StoreResponse = await Store.getAll();
-                
+
                 expect(response.items).toEqual([ ownHobby1, ownHobby2 ]);
             });
-        })
+        });
     });
 
     describe('#remove()', () => {
@@ -77,7 +77,7 @@ describe('Store: Spec', () => {
 
                 it('should return correct response items', () => {
                     expect(response.items).toEqual(hobbies);
-                })
+                });
 
                 it('should not remove any', async() => {
                     expect(Store.length()).toBe(3);

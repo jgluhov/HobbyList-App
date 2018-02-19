@@ -21,7 +21,7 @@ export class HobbyListService {
             li.appendChild(span);
 
             li.id = hobby.id;
-            li.className = hobbyListConstants.LIST_ITEM_CLASS;;
+            li.className = hobbyListConstants.LIST_ITEM_CLASS;
             li.appendChild(document.createTextNode(hobby.text));
 
             fragment.appendChild(li);
@@ -29,12 +29,16 @@ export class HobbyListService {
 
         return fragment;
     }
-    
+
     public getPath(e: IEvent): Node[] {
         return (e.path || (e.composedPath && e.composedPath())) || [];
     }
 
     public getElement(e: Event): HTMLElement {
         return <HTMLElement>this.getPath(e).shift();
+    }
+
+    public is(el: HTMLElement, tagName: string): boolean {
+        return el.tagName.toLowerCase() === tagName.toLowerCase();
     }
 }

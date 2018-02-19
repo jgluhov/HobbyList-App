@@ -3,13 +3,30 @@
  */
 import { Belonging, Hobby } from '@models';
 
+interface IStore {
+    create(hobby: Hobby): Promise<StoreResponse>;
+    get(startIndex?: number, count?: number, belonging?: string): Promise<StoreResponse>;
+    delete(id: string, belonging?: string): Promise<StoreResponse>;
+    getAll(): Promise<StoreResponse>;
+    length(belonging?: string): number;
+    _clear(): void;
+}
+
 export type StoreResponse = {
     items: Hobby[];
     total: number;
 };
 
-export const Store = function() {
+type DelayFn = (ms: number) => Promise<void>;
+
+export const Store: IStore = ((): IStore => {
     let _data: Hobby[] = [];
+
+    const delay: DelayFn = (ms: number): Promise<void> => {
+        return new Promise(
+            (resolve: (value?: void) => void): number => setTimeout(resolve, ms)
+        );
+    };
 
     return {
         async create(hobby: Hobby): Promise<StoreResponse> {
@@ -17,58 +34,57 @@ export const Store = function() {
                 ..._data,
                 hobby
             ];
-    
-            return await {
+
+            return Promise.resolve({
                 items: [ ..._data ],
                 total: _data.length
-            }
+            });
         },
 
         async get(
-            startIndex: number = 0, 
-            count: number = 0, 
+            startIndex: number = 0,
+            count: number = 0,
             belonging: string = Belonging.OWN
-        ): Promise<StoreResponse> { 
+        ): Promise<StoreResponse> {
             const filteredHobbies: Hobby[] = _data.filter((hobby: Hobby) => hobby.belonging === belonging);
             const items: Hobby[] = filteredHobbies.slice(startIndex, startIndex + count);
-    
-            await this.delay(1000);
-    
-            return {
+
+            await delay(1000);
+
+            return Promise.resolve({
                 items,
                 total: filteredHobbies.length
-            };
+            });
         },
 
-        async delete(id: string): Promise<StoreResponse>  {
+        async delete(id: string, belonging: string = Belonging.OWN): Promise<StoreResponse>  {
             _data = _data
-                .filter((hobby: Hobby) => hobby.id !== id);
-            
-            return await {
-                items: [ ..._data ],
+                .filter((hobby: Hobby) => hobby.id !== id)
+                .filter((hobby: Hobby) => hobby.belonging === belonging);
+
+            await delay(1000);
+
+            return Promise.resolve({
+                items: [],
                 total: _data.length
-            };
-        },
-    
-        async getAll(): Promise<StoreResponse> {
-            return await { 
-                items: [ ..._data ],
-                total: _data.length
-            };
-        },
-    
-        length(belonging: string = Belonging.OWN): number {
-            return _data.filter((hobby: Hobby) => hobby.belonging === belonging).length;
+            });
         },
 
-        delay(ms: number): Promise<void> {
-            return new Promise(
-                resolve => setTimeout(resolve, ms)
-            );
+        getAll(): Promise<StoreResponse> {
+            return Promise.resolve({
+                items: [ ..._data ],
+                total: _data.length
+            });
+        },
+
+        length(belonging: string = Belonging.OWN): number {
+            return _data.filter(
+                (hobby: Hobby) => hobby.belonging === belonging
+            ).length;
         },
 
         _clear(): void {
             _data = [];
         }
-    }
-}();
+    };
+})();

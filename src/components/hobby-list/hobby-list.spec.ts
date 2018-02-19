@@ -1,14 +1,13 @@
 /**
  * HobbyListApp | HobbyList Spec
  */
-import { Belonging, Hobby } from '@models';
 import * as Components from '@components';
+import { Belonging, Hobby } from '@models';
 import { Store, StoreResponse } from '@store';
-import * as Models from '@models';
 import * as sinon from 'sinon';
 
 interface IGeneratorHobbies {
-    (count: number): Hobby[]
+    (count: number): Hobby[];
 }
 
 describe('HobbyList: Spec', () => {
@@ -26,7 +25,7 @@ describe('HobbyList: Spec', () => {
     let loadHobbiesStub: sinon.SinonSpy;
     let generateHobbies: IGeneratorHobbies;
     let event: MouseEvent;
-    
+
     beforeAll(() => {
         ownHobby1 = new Hobby('own-hobby-1');
         ownHobby2 = new Hobby('own-hobby-2');
@@ -37,14 +36,14 @@ describe('HobbyList: Spec', () => {
         friendHobby1 = new Hobby('friend-hobby-1', Belonging.FRIEND);
         friendHobby2 = new Hobby('friend-hobby-2', Belonging.FRIEND);
 
-        generateHobbies = (count: number) => {
+        generateHobbies = (count: number): Hobby[] => {
             return new Array(count).fill(0).map((index: number) => ownHobby1);
         };
     });
 
     beforeEach(() => {
-        sandobox = sinon.createSandbox();  
-    })
+        sandobox = sinon.createSandbox();
+    });
 
     afterEach(() => {
         sandobox.restore();
@@ -83,7 +82,7 @@ describe('HobbyList: Spec', () => {
             });
 
             it('should set belonging to default value', () => {
-                expect(hobbyListUndef._state.belonging).toBe(Models.Belonging.OWN);
+                expect(hobbyListUndef._state.belonging).toBe(Belonging.OWN);
             });
 
             it('shoud set length to threshold value by default ', () => {
@@ -146,7 +145,7 @@ describe('HobbyList: Spec', () => {
                 hobbyList.$listFooter.textContent = 'some text';
                 hobbyList._state.threshold = 4;
                 hobbyList._state.total = 0;
-                
+
                 hobbyList._renderFooter();
             });
 
@@ -156,14 +155,14 @@ describe('HobbyList: Spec', () => {
 
             it('should not hide footer content', () => {
                 expect(hobbyList.$listFooter.hasAttribute('hidden')).toBeFalsy();
-            })
+            });
         });
 
         describe('when total items is less then threshold', () => {
             beforeEach(() => {
                 hobbyList.$listFooter.removeAttribute('hidden');
                 hobbyList.$listFooter.textContent = 'some text';
-                
+
                 hobbyList._state.threshold = 4;
                 hobbyList._state.total = 3;
                 hobbyList._renderFooter();
@@ -182,7 +181,7 @@ describe('HobbyList: Spec', () => {
             beforeEach(() => {
                 hobbyList.$listFooter.removeAttribute('hidden');
                 hobbyList.$listFooter.textContent = 'some text';
-                
+
                 hobbyList._state.threshold = 4;
                 hobbyList._state.total = 4;
                 hobbyList._renderFooter();
@@ -209,12 +208,12 @@ describe('HobbyList: Spec', () => {
                 beforeEach(() => {
                     hobbyList._state.threshold = 8;
                     hobbyList._state.total = 10;
-                    
+
                     hobbyList._renderFooter();
                 });
 
                 it('should set footer text correctly', () => {
-                    expect(hobbyList.$listFooter.textContent).toBe('Еще 2 увлечений(я)')
+                    expect(hobbyList.$listFooter.textContent).toBe('Еще 2 увлечений(я)');
                 });
 
                 it('should remove hidden attribute', () => {
@@ -226,12 +225,12 @@ describe('HobbyList: Spec', () => {
                 beforeEach(() => {
                     hobbyList._state.threshold = 10;
                     hobbyList._state.total = 10;
-                    
+
                     hobbyList._renderFooter();
                 });
 
                 it('should set footer text correctly', () => {
-                    expect(hobbyList.$listFooter.textContent).toBe('Свернуть')
+                    expect(hobbyList.$listFooter.textContent).toBe('Свернуть');
                 });
 
                 it('should remove hidden attribute', () => {
@@ -260,7 +259,7 @@ describe('HobbyList: Spec', () => {
             let renderedElems: DocumentFragment;
             let insertedEl: HTMLLIElement;
             let li: HTMLLIElement;
-            
+
             beforeEach(() => {
                 hobbyList._state.renderingIndex = 0;
                 renderedElems = hobbyList.service.toElements([
@@ -301,14 +300,14 @@ describe('HobbyList: Spec', () => {
                     hobbyList._state.items = [];
                     hobbyList._state.total = 0;
                     hobbyList._state.renderingIndex = 0;
-    
+
                     hobbyList._renderContent();
                 });
 
                 it('should not change renderingIndex', () => {
                     expect(hobbyList._state.renderingIndex).toBe(0);
                 });
-    
+
                 it('should not change list content', () => {
                     expect(hobbyList.$listContent.children.length).toBe(0);
                 });
@@ -328,7 +327,7 @@ describe('HobbyList: Spec', () => {
                 it('should not change renderingIndex', () => {
                     expect(hobbyList._state.renderingIndex).toBe(3);
                 });
-    
+
                 it('should not change list content', () => {
                     expect(hobbyList.$listContent.children.length).toBe(3);
                 });
@@ -336,12 +335,7 @@ describe('HobbyList: Spec', () => {
 
             describe('when there are more hobbies then length', () => {
                 beforeEach(() => {
-                    hobbyList._state.items = [
-                        ownHobby1, ownHobby2, ownHobby3,
-                        ownHobby4, ownHobby5, ownHobby6, 
-                        ownHobby1, ownHobby2, ownHobby3,
-                        ownHobby4
-                    ];
+                    hobbyList._state.items = [... generateHobbies(10) ];
                     hobbyList._state.renderingIndex = 0;
                     hobbyList._renderContent();
                 });
@@ -349,7 +343,7 @@ describe('HobbyList: Spec', () => {
                 it('should not change renderingIndex', () => {
                     expect(hobbyList._state.renderingIndex).toBe(4);
                 });
-    
+
                 it('should not change list content', () => {
                     expect(hobbyList.$listContent.children.length).toBe(4);
                 });
@@ -363,7 +357,7 @@ describe('HobbyList: Spec', () => {
                     it('should change renderingIndex to', () => {
                         expect(hobbyList._state.renderingIndex).toBe(8);
                     });
-        
+
                     it('should not change list content', () => {
                         expect(hobbyList.$listContent.children.length).toBe(8);
                     });
@@ -390,7 +384,6 @@ describe('HobbyList: Spec', () => {
         });
 
         describe('when we are trying to remove element by correct index', () => {
-            
             beforeEach(() => {
                 insertedElem = <HTMLLIElement>hobbyList.service
                     .toElements([ownHobby1]).firstElementChild;
@@ -406,7 +399,7 @@ describe('HobbyList: Spec', () => {
                 expect(hobbyList._state.renderingIndex).toBe(0);
             });
 
-            it('should add remove class to el', () => {        
+            it('should add remove class to el', () => {
                 hobbyList._remove(0);
 
                 expect(classList.contains('hobby-list__item--removed')).toBeTruthy();
@@ -426,7 +419,7 @@ describe('HobbyList: Spec', () => {
 
             it('should remove hobby from state', async() => {
                 await hobbyList._remove(0, true);
-                
+
                 expect(hobbyList._state.items).toEqual([]);
             });
         });
@@ -439,12 +432,10 @@ describe('HobbyList: Spec', () => {
             loadHobbiesStub = sandobox.stub(hobbyList, '_loadHobbies')
                 .callsFake(
                     async(startIndex: number, count: number) => {
-                        const response: StoreResponse = {
+                        return {
                             items: [ ...generateHobbies(count) ],
                             total:  10
                         };
-
-                        return response;
                     }
                 );
         });
@@ -469,12 +460,12 @@ describe('HobbyList: Spec', () => {
         describe('when there are less items then length', () => {
             beforeEach(async() => {
                 hobbyList._state.total = 3;
-                hobbyList._state.items = [ ...generateHobbies(3) ]
+                hobbyList._state.items = [ ...generateHobbies(3) ];
 
                 await hobbyList._handleFooterClick(event);
             });
 
-            it('should not increase threshold', () => { 
+            it('should not increase threshold', () => {
                 expect(hobbyList._state.threshold).toBe(4);
             });
 
@@ -503,16 +494,16 @@ describe('HobbyList: Spec', () => {
         describe('when there are more items then threshold', () => {
             describe('when we click once', () => {
                 beforeEach(async() => {
-                    hobbyList._state.total = 10; 
+                    hobbyList._state.total = 10;
                     hobbyList._state.items = [ ...generateHobbies(4) ];
 
                     await hobbyList._handleFooterClick(event);
                 });
-    
+
                 it('should increase threshold', () => {
                     expect(hobbyList._state.threshold).toBe(8);
                 });
-    
+
                 it('should call loadHobbies', () => {
                     expect(loadHobbiesStub.called).toBeTruthy();
                 });
@@ -526,7 +517,7 @@ describe('HobbyList: Spec', () => {
                 beforeEach(async() => {
                     hobbyList._state.total = 10;
                     hobbyList._state.items = [ ...generateHobbies(4) ];
-                    
+
                     await hobbyList._handleFooterClick(event);
                     await hobbyList._handleFooterClick(event);
                 });
@@ -537,7 +528,7 @@ describe('HobbyList: Spec', () => {
 
                 it('should call loadHobbies twice', () => {
                     expect(loadHobbiesStub.calledTwice).toBeTruthy();
-                })
+                });
 
                 it('should call loadHobbies firstly with correct params', () => {
                     expect(loadHobbiesStub.args[0][1]).toBe(4);
@@ -552,14 +543,14 @@ describe('HobbyList: Spec', () => {
                 beforeEach(async() => {
                     hobbyList._state.total = 10;
                     hobbyList._state.items = [ ...generateHobbies(4) ];
-    
+
                     await hobbyList._handleFooterClick(event);
                     await hobbyList._handleFooterClick(event);
                     await hobbyList._handleFooterClick(event);
                 });
 
                 it('should call loadHobbies only twice', () => {
-                  expect(loadHobbiesStub.calledTwice).toBeTruthy();  
+                  expect(loadHobbiesStub.calledTwice).toBeTruthy();
                 });
 
                 it('should decrease threshold to 4', () => {
@@ -571,7 +562,7 @@ describe('HobbyList: Spec', () => {
                 beforeEach(async() => {
                     hobbyList._state.total = 10;
                     hobbyList._state.items = [ ...generateHobbies(4) ];
-                    
+
                     await hobbyList._handleFooterClick(event);
                     await hobbyList._handleFooterClick(event);
                     await hobbyList._handleFooterClick(event);
@@ -581,13 +572,40 @@ describe('HobbyList: Spec', () => {
                 });
 
                 it('should call loadHobbies only twice', () => {
-                    expect(loadHobbiesStub.calledTwice).toBeTruthy();  
+                    expect(loadHobbiesStub.calledTwice).toBeTruthy();
                 });
-  
+
                 it('should decrease threshold to 4', () => {
                     expect(hobbyList._state.threshold).toBe(4);
                 });
             });
-        })
+        });
+    });
+
+    describe('#_handleRemove()', () => {
+        describe('when click on an element to remove', () => {
+            let deleteStub: sinon.SinonStub;
+            let el: HTMLElement;
+
+            beforeEach(() => {
+                deleteStub = sandobox.stub(Store, 'delete');
+                hobbyList.$listContent.appendChild(hobbyList.service.toElements([
+                    ownHobby1
+                ]));
+                el = <HTMLElement>hobbyList.$listContent.firstElementChild;
+            });
+
+            it('should send request to server', () => {
+                hobbyList._handleRemove(el);
+
+                expect(deleteStub.called).toBeTruthy();
+            });
+
+            it('should send request with correct id', () => {
+                hobbyList._handleRemove(el);
+
+                expect(deleteStub.args[0][0]).toBe(el.id);
+            });
+        });
     });
 });
