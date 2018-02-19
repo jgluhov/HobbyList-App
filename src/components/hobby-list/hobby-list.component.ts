@@ -88,8 +88,7 @@ export class HobbyList extends HTMLElement {
     public async _loadHobbies(
         startIndex: number, 
         count: number
-    ): Promise<Store.StoreResponse> {
-        console.log('real');
+    ): Promise<Store.StoreResponse> {        
         this._setLoading(true);
         
         const response: Store.StoreResponse = await this.service.get(
@@ -209,11 +208,11 @@ export class HobbyList extends HTMLElement {
         }
 
         if (this._state.threshold < this._state.total) {
-            const nextThreshold = Math.min(
-                this._state.threshold + HobbyListConstants.DEFAULT_LENGTH,
+            const next = Math.min(
+                this._state.threshold + HobbyListConstants.THRESHOLD_STEP,
                 this._state.total
             );
-            this._state.threshold += nextThreshold - this._state.threshold;
+            this._state.threshold += next - this._state.threshold;
 
             if (this._state.threshold > this._state.items.length) {
                 const count: number = this._state.threshold - this._state.items.length;
