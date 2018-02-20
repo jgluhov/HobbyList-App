@@ -34,9 +34,11 @@ export const Store: IStore = ((): IStore => {
             (resolve: (value?: void) => void): number => setTimeout(resolve, ms)
         );
     };
-
     const dispatchUpdate: DispatchFn  = (belonging: string): void => {
         Utils.dispatchEvent(`store:update:${belonging}`);
+    };
+    const dispatchCreate: DispatchFn  = (belonging: string): void => {
+        Utils.dispatchEvent(`store:create:${belonging}`);
     };
 
     return {
@@ -47,7 +49,7 @@ export const Store: IStore = ((): IStore => {
             ];
 
             await delay(DELAY_MS);
-            dispatchUpdate(hobby.belonging);
+            dispatchCreate(hobby.belonging);
 
             return Promise.resolve(SUCCESS_RESPONSE);
         },
@@ -86,7 +88,7 @@ export const Store: IStore = ((): IStore => {
             ];
 
             await delay(DELAY_MS);
-            dispatchUpdate(foundHobby.belonging);
+            dispatchCreate(changedHobby.belonging);
 
             return Promise.resolve(SUCCESS_RESPONSE);
         },

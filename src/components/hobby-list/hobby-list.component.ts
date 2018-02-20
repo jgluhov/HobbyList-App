@@ -106,13 +106,21 @@ export class HobbyList extends HTMLElement {
         this._render();
 
         addEventListener(
-            `store:update:${this._state.belonging}`,
+            `store:create:${this._state.belonging}`,
             this._handleStoreUpdate.bind(this)
         );
     }
 
     public async _handleStoreUpdate(): Promise<void> {
-        const response: GETResponse = await this._loadHobbies();
+        let startIndex: number = 0;
+        let count: number = 0;
+
+        if (this._state.total < this._state.length) {
+            startIndex = this._state.renderingIndex;
+            count = 1;
+        }
+
+        const response: GETResponse = await this._loadHobbies(startIndex, count);
         this._updateState(response);
         this._render();
     }
@@ -207,11 +215,7 @@ export class HobbyList extends HTMLElement {
                 this._setFooterText();
             } else {
                 this._hiddenFooter(false);
-                const remainingCount: number = this._state.total -
-                    Math.min(
-                        this._state.threshold,
-                        this._state.renderingIndex
-                    );
+                const remainingCount: number = this._getRemainingCount();
 
                 if (remainingCount > 0) {
                     this._setFooterText(
@@ -224,6 +228,14 @@ export class HobbyList extends HTMLElement {
                 }
             }
         }
+    }
+
+    public _getRemainingCount(): number {
+        return this._state.total -
+            Math.min(
+                this._state.threshold,
+                this._state.renderingIndex
+            );
     }
 
     public _insert(hobby: Hobby): void {
@@ -336,8 +348,9 @@ export class HobbyList extends HTMLElement {
                 this._state.renderingIndex, 1
             );
             this._updateState(response);
-            this._render();
         }
+
+        this._render();
     }
 
     public _handleRemove(el: HTMLElement): void {
