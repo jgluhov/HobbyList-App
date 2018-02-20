@@ -7,7 +7,7 @@ import { Store } from '@store';
 import './styles/main.scss';
 
 async function main(): Promise<void> {
-    await initiateStore();
+    initiateStore();
 
     customElements.define('hobby-form', HobbyForm);
     customElements.define('hobby-list', HobbyList);
@@ -18,7 +18,7 @@ async function main(): Promise<void> {
     addEventListener('hobby:create', handleHobbyCreate);
 }
 
-async function initiateStore(): Promise<void> {
+function initiateStore(): void {
     Store._initiate([
         new Hobby('own-hobby-1'),
         new Hobby('own-hobby-2'),
