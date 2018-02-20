@@ -2,19 +2,20 @@
  * HobbyListApp | Store
  */
 import { Belonging, Hobby } from '@models';
+import * as Utils from '@utils';
 
 interface IStore {
-    create(hobby: Hobby): Promise<SUCCESSResponse>;
+    post(hobby: Hobby): Promise<SUCCESSResponse>;
     get(startIndex?: number, count?: number, belonging?: string): Promise<GETResponse>;
     delete(id: string, belonging?: string): Promise<SUCCESSResponse>;
     patch(id: string, data?: Partial<Hobby>): Promise<SUCCESSResponse>;
     getAll(): Promise<GETResponse>;
-    length(belonging?: string): number;
-    _initiate(hobbies: Hobby[]): void;
+    _fill(hobbies: Hobby[]): void;
     _clear(): void;
 }
 
 const DELAY_MS: number = DEVELOPMENT ? 0 : 1000;
+const SUCCESS_RESPONSE: string = 'OK';
 
 export type GETResponse = {
     items: Hobby[];
@@ -23,6 +24,7 @@ export type GETResponse = {
 export type SUCCESSResponse = string;
 
 type DelayFn = (ms: number) => Promise<void>;
+type DispatchFn = () => void;
 
 export const Store: IStore = ((): IStore => {
     let _data: Hobby[] = [];
@@ -33,16 +35,21 @@ export const Store: IStore = ((): IStore => {
         );
     };
 
+    const dispatchUpdate: DispatchFn  = (): void => {
+        Utils.dispatchEvent('store:update');
+    };
+
     return {
-        async create(hobby: Hobby): Promise<SUCCESSResponse> {
+        async post(hobby: Hobby): Promise<SUCCESSResponse> {
             _data = [
                 ..._data,
                 hobby
             ];
 
             await delay(DELAY_MS);
+            dispatchUpdate();
 
-            return Promise.resolve('OK');
+            return Promise.resolve(SUCCESS_RESPONSE);
         },
 
         async get(
@@ -66,9 +73,7 @@ export const Store: IStore = ((): IStore => {
             data: Partial<Hobby>
         ): Promise<SUCCESSResponse> {
             const foundHobby: Hobby = _data.find((hobby: Hobby) => hobby.id === id);
-
-            _data = _data
-                .filter((hobby: Hobby) => hobby.id !== id);
+            _data = _data.filter((hobby: Hobby) => hobby.id !== id);
 
             if (foundHobby) {
                 const changedHobby: Hobby = {
@@ -83,18 +88,19 @@ export const Store: IStore = ((): IStore => {
             }
 
             await delay(DELAY_MS);
+            dispatchUpdate();
 
-            return Promise.resolve('OK');
+            return Promise.resolve(SUCCESS_RESPONSE);
         },
 
         async delete(id: string, belonging: string = Belonging.OWN): Promise<SUCCESSResponse>  {
             _data = _data
-                .filter((hobby: Hobby) => hobby.id !== id)
-                .filter((hobby: Hobby) => hobby.belonging === belonging);
+                .filter((h: Hobby) => h.id !== id)
+                .filter((h: Hobby) => h.belonging === belonging);
 
             await delay(DELAY_MS);
 
-            return Promise.resolve('OK');
+            return Promise.resolve(SUCCESS_RESPONSE);
         },
 
         async getAll(): Promise<GETResponse> {
@@ -106,16 +112,8 @@ export const Store: IStore = ((): IStore => {
             });
         },
 
-        length(belonging: string = Belonging.OWN): number {
-            return _data.filter(
-                (hobby: Hobby) => hobby.belonging === belonging
-            ).length;
-        },
-
-        _initiate(hobbies: Hobby[]): void {
-            _data = [
-                ...hobbies
-            ];
+        _fill(hobbies: Hobby[]): void {
+            _data = [ ...hobbies ];
         },
 
         _clear(): void {

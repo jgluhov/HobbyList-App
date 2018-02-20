@@ -20,7 +20,7 @@ export function createShadowRoot(style: string, template: string): DocumentFragm
     return content;
 }
 
-export function dispatchEvent<T>(eventName: string, data: T): void {
+export function dispatchEvent<T>(eventName: string, data?: T): void {
     const customEventInit: IExCustomEventInit = {
         detail: { data },
         bubbles: true,

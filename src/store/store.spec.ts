@@ -41,15 +41,16 @@ xdescribe('Store: Spec', () => {
     describe('#create()', () => {
         describe('when we call create method once', () => {
             it('should create it to store', async () => {
-                await Store.create(ownHobby1);
-                expect(Store.length()).toBe(1);
+                await Store.post(ownHobby1);
+                getResponse = await Store.getAll();
+                expect(getResponse.total).toBe(1);
             });
         });
 
         describe('when we call create method twice', () => {
             it('should create it aftre previous one', async() => {
-                await Store.create(ownHobby1);
-                await Store.create(ownHobby2);
+                await Store.post(ownHobby1);
+                await Store.post(ownHobby2);
 
                 getResponse = await Store.getAll();
 
@@ -63,7 +64,7 @@ xdescribe('Store: Spec', () => {
 
         beforeEach(() => {
             hobbies = [ ownHobby1, ownHobby2, ownHobby3 ];
-            hobbies.forEach(Store.create.bind(Store));
+            hobbies.forEach(Store.post.bind(Store));
         });
 
         describe('when we call remove method', () => {
@@ -82,7 +83,8 @@ xdescribe('Store: Spec', () => {
                 });
 
                 it('should not remove any', async() => {
-                    expect(Store.length()).toBe(3);
+                    getResponse = await Store.getAll();
+                    expect(getResponse.total).toBe(3);
                 });
             });
 
@@ -106,8 +108,9 @@ xdescribe('Store: Spec', () => {
                     ]);
                 });
 
-                it('should remove it from Store', () => {
-                    expect(Store.length()).toBe(2);
+                it('should remove it from Store', async() => {
+                    getResponse = await Store.getAll();
+                    expect(getResponse.total).toBe(2);
                 });
             });
         });
@@ -122,9 +125,9 @@ xdescribe('Store: Spec', () => {
 
             describe('when our Store is not empty', () => {
                 it('should return correct total value', async() => {
-                    await Store.create(ownHobby1);
-                    await Store.create(ownHobby2);
-                    await Store.create(ownHobby3);
+                    await Store.post(ownHobby1);
+                    await Store.post(ownHobby2);
+                    await Store.post(ownHobby3);
 
                     getResponse = await Store.get();
                     expect(getResponse).toEqual({
@@ -137,13 +140,13 @@ xdescribe('Store: Spec', () => {
 
         describe('when we call get() method with params', () => {
             beforeEach(async() => {
-                await Store.create(ownHobby1);
-                await Store.create(ownHobby2);
-                await Store.create(ownHobby3);
-                await Store.create(ownHobby4);
-                await Store.create(ownHobby5);
-                await Store.create(ownHobby6);
-                await Store.create(friendHobby1);
+                await Store.post(ownHobby1);
+                await Store.post(ownHobby2);
+                await Store.post(ownHobby3);
+                await Store.post(ownHobby4);
+                await Store.post(ownHobby5);
+                await Store.post(ownHobby6);
+                await Store.post(friendHobby1);
             });
 
             describe('when startIndex is equal to 0 and count equal to 1', () => {
@@ -195,7 +198,7 @@ xdescribe('Store: Spec', () => {
         let changedHobby: Hobby;
 
         beforeEach(async() => {
-            await Store.create(friendHobby1);
+            await Store.post(friendHobby1);
         });
 
         describe('when we patch hobby with incorrect id', () => {

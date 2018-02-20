@@ -19,7 +19,7 @@ async function main(): Promise<void> {
 }
 
 function initiateStore(): void {
-    Store._initiate([
+    Store._fill([
         new Hobby('own-hobby-1'),
         new Hobby('own-hobby-2'),
         new Hobby('own-hobby-3'),
@@ -46,7 +46,7 @@ function initiateStore(): void {
 }
 
 function handleHobbyCreate(e: CustomEvent): void {
-    Store.create(e.detail.data);
+    Store.post(e.detail.data);
 }
 
 addEventListener('load', main);
