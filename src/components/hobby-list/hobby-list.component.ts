@@ -258,6 +258,10 @@ export class HobbyList extends HTMLElement {
             return hobby.id !== el.id;
         });
         el.classList.add(HobbyListConstants.LIST_ITEM_REMOVED_CLASS);
+
+        if (this._state.threshold > this._state.length) {
+            this._state.threshold -= 1;
+        }
     }
 
     public _handleAnimation(e: AnimationEvent): void {

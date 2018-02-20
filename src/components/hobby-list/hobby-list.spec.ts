@@ -675,33 +675,57 @@ describe('HobbyList: Spec', () => {
         describe('when click on an element to remove', () => {
             let el: HTMLElement;
 
-            beforeEach(async() => {
-                hobbyList._state.total = 1;
-                hobbyList._state.items = [
-                    ownHobby1
-                ];
+            describe('when list was collapsed', () => {
+                beforeEach(() => {
+                    hobbyList._state.total = 10;
+                    hobbyList._state.items = [ ...generateHobbies(10) ];
+                    hobbyList._state.threshold = 8;
+                    hobbyList._render();
+                });
 
-                hobbyList._render();
+                it('should render 8 elements', () => {
+                    expect(hobbyList.$listContent.children.length).toBe(8);
+                });
 
-                el = <HTMLElement>hobbyList.$listContent.firstElementChild;
+                describe('when we remove one element', () => {
+                    it('should decrease threshold', async() => {
+                        el = <HTMLElement>hobbyList.$listContent.children[0];
+                        await hobbyList._handleRemove(el);
+
+                        expect(hobbyList._state.threshold).toBe(7);
+                    });
+                });
             });
 
-            it('should update total of state if delete request was succeed', () => {
-                hobbyList._handleRemove(el);
+            describe('when there is one element', () => {
+                beforeEach(async() => {
+                    hobbyList._state.total = 1;
+                    hobbyList._state.items = [
+                        ownHobby1
+                    ];
 
-                expect(hobbyList._state.total).toBe(0);
-            });
+                    hobbyList._render();
 
-            it('should remove item from state', async() => {
-                hobbyList._handleRemove(el);
+                    el = <HTMLElement>hobbyList.$listContent.firstElementChild;
+                });
 
-                expect(hobbyList._state.items).toEqual([]);
-            });
+                it('should update total of state if delete request was succeed', () => {
+                    hobbyList._handleRemove(el);
 
-            it('should add remove modificator', () => {
-                hobbyList._handleRemove(el);
+                    expect(hobbyList._state.total).toBe(0);
+                });
 
-                expect(el.classList.contains('hobby-list__item--removed')).toBeTruthy();
+                it('should remove item from state', async() => {
+                    hobbyList._handleRemove(el);
+
+                    expect(hobbyList._state.items).toEqual([]);
+                });
+
+                it('should add remove modificator', () => {
+                    hobbyList._handleRemove(el);
+
+                    expect(el.classList.contains('hobby-list__item--removed')).toBeTruthy();
+                });
             });
         });
     });
