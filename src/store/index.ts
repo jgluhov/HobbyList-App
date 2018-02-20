@@ -2,4 +2,4 @@
  * HobbyListApp | Store Root
  */
 
-export { Store, StoreResponse } from './store';
+export { Store, GETResponse, SUCCESSResponse } from './store';

@@ -2,7 +2,7 @@
  * HobbyListApp | Store Spec
  */
 import { Belonging, Hobby } from '@models';
-import { Store, StoreResponse } from '@store';
+import { GETResponse, Store, SUCCESSResponse } from '@store';
 
 xdescribe('Store: Spec', () => {
     let ownHobby1: Hobby;
@@ -12,6 +12,8 @@ xdescribe('Store: Spec', () => {
     let ownHobby5: Hobby;
     let ownHobby6: Hobby;
     let friendHobby1: Hobby;
+    let getResponse: GETResponse;
+    let successResponse: SUCCESSResponse;
 
     beforeEach(() => {
         ownHobby1 = new Hobby('own-hobby-1');
@@ -30,8 +32,8 @@ xdescribe('Store: Spec', () => {
     describe('@constructor()', () => {
         describe('when we create store', () => {
             it('should have a clear data array', async() => {
-                const response: StoreResponse = await Store.getAll();
-                expect(response.items).toEqual([]);
+                getResponse = await Store.getAll();
+                expect(getResponse.items).toEqual([]);
             });
         });
     });
@@ -49,16 +51,15 @@ xdescribe('Store: Spec', () => {
                 await Store.create(ownHobby1);
                 await Store.create(ownHobby2);
 
-                const response: StoreResponse = await Store.getAll();
+                getResponse = await Store.getAll();
 
-                expect(response.items).toEqual([ ownHobby1, ownHobby2 ]);
+                expect(getResponse.items).toEqual([ ownHobby1, ownHobby2 ]);
             });
         });
     });
 
     describe('#remove()', () => {
         let hobbies: Hobby[];
-        let response: StoreResponse;
 
         beforeEach(() => {
             hobbies = [ ownHobby1, ownHobby2, ownHobby3 ];
@@ -68,15 +69,16 @@ xdescribe('Store: Spec', () => {
         describe('when we call remove method', () => {
             describe('when we pass wrong id', () => {
                 beforeEach(async() => {
-                    response = await Store.delete('unknownId');
+                    successResponse = await Store.delete('unknownId');
+                    getResponse = await Store.getAll();
                 });
 
                 it('should return correct response total', () => {
-                    expect(response.total).toBe(3);
+                    expect(getResponse.total).toBe(3);
                 });
 
                 it('should return correct response items', () => {
-                    expect(response.items).toEqual(hobbies);
+                    expect(getResponse.items).toEqual(hobbies);
                 });
 
                 it('should not remove any', async() => {
@@ -86,15 +88,20 @@ xdescribe('Store: Spec', () => {
 
             describe('when we remove first element', () => {
                 beforeEach(async() => {
-                    response = await Store.delete(hobbies.shift().id);
+                    successResponse = await Store.delete(hobbies.shift().id);
+                    getResponse = await Store.getAll();
+                });
+
+                it('should reponds with ok', () => {
+                    expect(successResponse).toBe('OK');
                 });
 
                 it('should return correct response total', () => {
-                    expect(response.total).toBe(2);
+                    expect(getResponse.total).toBe(2);
                 });
 
                 it('should return correct response items', () => {
-                    expect(response.items).toEqual([
+                    expect(getResponse.items).toEqual([
                         ownHobby2, ownHobby3
                     ]);
                 });
@@ -115,12 +122,12 @@ xdescribe('Store: Spec', () => {
 
             describe('when our Store is not empty', () => {
                 it('should return correct total value', async() => {
-                    Store.create(ownHobby1);
-                    Store.create(ownHobby2);
-                    Store.create(ownHobby3);
+                    await Store.create(ownHobby1);
+                    await Store.create(ownHobby2);
+                    await Store.create(ownHobby3);
 
-                    const response: StoreResponse = await Store.get();
-                    expect(response).toEqual({
+                    getResponse = await Store.get();
+                    expect(getResponse).toEqual({
                         items: [],
                         total: 3
                     });
@@ -141,8 +148,8 @@ xdescribe('Store: Spec', () => {
 
             describe('when startIndex is equal to 0 and count equal to 1', () => {
                 it('should return correct response', async() => {
-                    const response: StoreResponse = await Store.get(0, 1);
-                    expect(response).toEqual({
+                    getResponse = await Store.get(0, 1);
+                    expect(getResponse).toEqual({
                         items: [ownHobby1],
                         total: 6
                     });
@@ -151,8 +158,8 @@ xdescribe('Store: Spec', () => {
 
             describe('when startIndex is equal to -4 and count equal to -1', () => {
                 it('should return correct response', async() => {
-                    const response: StoreResponse = await Store.get(4, 1);
-                    expect(response).toEqual({
+                    getResponse = await Store.get(4, 1);
+                    expect(getResponse).toEqual({
                         items: [ownHobby5],
                         total: 6
                     });
@@ -161,8 +168,8 @@ xdescribe('Store: Spec', () => {
 
             describe('when startIndex is equal to 6 and count equal to 1', () => {
                 it('should return correct response', async() => {
-                    const response: StoreResponse = await Store.get(6, 1);
-                    expect(response).toEqual({
+                    getResponse = await Store.get(6, 1);
+                    expect(getResponse).toEqual({
                         items: [],
                         total: 6
                     });
@@ -174,11 +181,62 @@ xdescribe('Store: Spec', () => {
                     await Store.delete(ownHobby1.id);
                     await Store.delete(ownHobby5.id);
 
-                    const response: StoreResponse = await Store.get(0, 4);
-                    expect(response).toEqual({
+                    getResponse = await Store.get(0, 4);
+                    expect(getResponse).toEqual({
                         items: [ownHobby2, ownHobby3, ownHobby4, ownHobby6],
                         total: 4
                     });
+                });
+            });
+        });
+    });
+
+    describe('#patch()', () => {
+        let changedHobby: Hobby;
+
+        beforeEach(async() => {
+            await Store.create(friendHobby1);
+        });
+
+        describe('when we patch hobby with incorrect id', () => {
+            beforeEach(async() => {
+                await Store.patch('some id', {
+                    belonging: Belonging.OWN
+                });
+            });
+
+            it('should not change store', async() => {
+                getResponse = await Store.getAll();
+
+                expect(getResponse).toEqual({
+                    items: [friendHobby1],
+                    total: 1
+                });
+            });
+        });
+
+        describe('when we patch hobby with correct id', () => {
+            beforeEach(async() => {
+                successResponse = await Store.patch(friendHobby1.id, {
+                    belonging: Belonging.OWN
+                });
+
+                changedHobby = {
+                    ...friendHobby1,
+                    belonging: Belonging.OWN
+                };
+            });
+
+            it('should responds with ok', () => {
+                expect(successResponse).toBe('OK');
+            });
+
+            it('should change store', async() => {
+                getResponse = await Store.getAll();
+
+                expect(getResponse).toEqual({
+                    items: [changedHobby],
+                    total: 1
                 });
             });
         });

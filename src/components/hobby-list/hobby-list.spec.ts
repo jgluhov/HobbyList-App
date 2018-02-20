@@ -3,7 +3,7 @@
  */
 import * as Components from '@components';
 import { Belonging, Hobby } from '@models';
-import { Store, StoreResponse } from '@store';
+import { GETResponse, Store } from '@store';
 import * as sinon from 'sinon';
 
 interface IGeneratorHobbies {

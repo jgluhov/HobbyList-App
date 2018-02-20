@@ -2,7 +2,7 @@
  * HobbyListApp | Hobby List Component
  */
 import { Belonging, Hobby } from '@models';
-import { Store, StoreResponse } from '@store';
+import { GETResponse, Store } from '@store';
 import * as Utils from '@utils';
 import * as HobbyListConstants from './hobby-list.constants';
 import { HobbyListService } from './hobby-list.service';
@@ -84,24 +84,24 @@ export class HobbyList extends HTMLElement {
         this._shadowRoot.addEventListener('animationend', this._handleAnimation.bind(this), false);
         this._shadowRoot.addEventListener('click', this._handleClick.bind(this), false);
 
-        const response: StoreResponse = await this._loadHobbies(0, this._state.threshold);
+        const response: GETResponse = await this._loadHobbies(0, this._state.threshold);
 
         this._updateState(response);
 
         this._render();
     }
 
-    public async _loadHobbies(startIndex: number, count: number): Promise<StoreResponse> {
+    public async _loadHobbies(startIndex: number, count: number): Promise<GETResponse> {
         this._setLoading(true);
 
-        const response: StoreResponse = await Store.get(startIndex, count, this._state.belonging);
+        const response: GETResponse = await Store.get(startIndex, count, this._state.belonging);
 
         this._setLoading(false);
 
         return response;
     }
 
-    public _updateState(response: StoreResponse): void {
+    public _updateState(response: GETResponse): void {
         this._state = {
             ...this._state,
             items: [
@@ -229,7 +229,7 @@ export class HobbyList extends HTMLElement {
 
             if (this._state.threshold > this._state.items.length) {
                 const count: number = this._state.threshold - this._state.items.length;
-                const response: StoreResponse = await this._loadHobbies(this._state.items.length, count);
+                const response: GETResponse = await this._loadHobbies(this._state.items.length, count);
 
                 this._updateState(response);
             }
@@ -251,7 +251,7 @@ export class HobbyList extends HTMLElement {
         }
 
         if (this._state.total > this._state.items.length) {
-            const response: StoreResponse = await Store.get(
+            const response: GETResponse = await Store.get(
                 this._state.renderingIndex, 1
             );
             this._updateState(response);
