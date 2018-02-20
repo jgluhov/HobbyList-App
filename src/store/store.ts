@@ -10,6 +10,7 @@ interface IStore {
     patch(id: string, data?: Partial<Hobby>): Promise<SUCCESSResponse>;
     getAll(): Promise<GETResponse>;
     length(belonging?: string): number;
+    _initiate(hobbies: Hobby[]): void;
     _clear(): void;
 }
 
@@ -109,6 +110,12 @@ export const Store: IStore = ((): IStore => {
             return _data.filter(
                 (hobby: Hobby) => hobby.belonging === belonging
             ).length;
+        },
+
+        _initiate(hobbies: Hobby[]): void {
+            _data = [
+                ...hobbies
+            ];
         },
 
         _clear(): void {
