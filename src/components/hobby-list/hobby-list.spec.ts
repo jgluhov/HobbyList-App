@@ -297,10 +297,10 @@ describe('HobbyList: Spec', () => {
 
             beforeEach(() => {
                 hobbyList._state.renderingIndex = 0;
-                renderedElems = hobbyList.service.toElements([
+                renderedElems = hobbyList._service.toElements([
                     ownHobby1, ownHobby2
                 ]);
-                insertedEl = <HTMLLIElement>hobbyList.service
+                insertedEl = <HTMLLIElement>hobbyList._service
                     .toElements([ ownHobby3 ]).firstElementChild;
 
                 hobbyList.$listContent.appendChild(renderedElems);
@@ -407,7 +407,7 @@ describe('HobbyList: Spec', () => {
 
         describe('when we are trying to remove element by incorrect index', () => {
             beforeEach(() => {
-                insertedElem = <HTMLLIElement>hobbyList.service
+                insertedElem = <HTMLLIElement>hobbyList._service
                     .toElements([ownHobby1]).firstElementChild;
                 hobbyList.$listContent.appendChild(insertedElem);
             });
@@ -420,7 +420,7 @@ describe('HobbyList: Spec', () => {
 
         describe('when we are trying to remove element by correct index', () => {
             beforeEach(() => {
-                insertedElem = <HTMLLIElement>hobbyList.service
+                insertedElem = <HTMLLIElement>hobbyList._service
                     .toElements([ownHobby1]).firstElementChild;
 
                 hobbyList.$listContent.appendChild(insertedElem);
@@ -444,7 +444,7 @@ describe('HobbyList: Spec', () => {
         describe('when we pass force param', () => {
             beforeEach(() => {
                 hobbyList._state.items = [ownHobby1];
-                insertedElem = <HTMLLIElement>hobbyList.service
+                insertedElem = <HTMLLIElement>hobbyList._service
                     .toElements([ownHobby1]).firstElementChild;
 
                 hobbyList.$listContent.appendChild(insertedElem);

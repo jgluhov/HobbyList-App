@@ -22,11 +22,11 @@ type HobbyListState = {
 };
 
 export class HobbyList extends HTMLElement {
-    public _shadowRoot: ShadowRoot;
     public $list: HTMLDivElement;
     public $listContent: HTMLDivElement;
     public $listFooter: HTMLDialogElement;
-    public service: HobbyListService = new HobbyListService();
+    public _shadowRoot: ShadowRoot;
+    public _service: HobbyListService = new HobbyListService();
     public _state: HobbyListState = {
         threshold: HobbyListConstants.DEFAULT_LENGTH,
         length: HobbyListConstants.DEFAULT_LENGTH,
@@ -196,7 +196,7 @@ export class HobbyList extends HTMLElement {
     }
 
     public _insert(hobby: Hobby): void {
-        const newEl: DocumentFragment = this.service.toElements([ hobby ]);
+        const newEl: DocumentFragment = this._service.toElements([ hobby ]);
         newEl.firstElementChild.classList.add(
             HobbyListConstants.LIST_ITEM_INSERTED_CLASS
         );
@@ -234,7 +234,7 @@ export class HobbyList extends HTMLElement {
     public _handleClick(e: MouseEvent): void {
         e.preventDefault();
 
-        const target: HTMLElement = this.service.getElement(e);
+        const target: HTMLElement = this._service.getElement(e);
 
         if (target.isEqualNode(this.$listFooter)) {
             this._handleFooterClick(e);
@@ -278,16 +278,16 @@ export class HobbyList extends HTMLElement {
     }
 
     public async _handleListClick(e: MouseEvent): Promise<void> {
-        const target: HTMLElement = this.service.getElement(e);
+        const target: HTMLElement = this._service.getElement(e);
 
-        if (this.service.is(target, 'span') &&
+        if (this._service.is(target, 'span') &&
             this._state.belonging === Belonging.OWN
         ) {
             await Store.delete(target.parentElement.id);
             await this._handleRemove(target.parentElement);
         }
 
-        if (this.service.is(target, 'li') &&
+        if (this._service.is(target, 'li') &&
             this._state.belonging === Belonging.FRIEND
         ) {
             await Store.patch(target.id, {
@@ -322,7 +322,7 @@ export class HobbyList extends HTMLElement {
     }
 
     public _handleAnimation(e: AnimationEvent): void {
-        const el: HTMLElement = this.service.getElement(e);
+        const el: HTMLElement = this._service.getElement(e);
 
         if (e.animationName === 'appearing') {
             el.classList.remove(HobbyListConstants.LIST_ITEM_INSERTED_CLASS);
