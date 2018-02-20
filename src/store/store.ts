@@ -14,7 +14,7 @@ interface IStore {
     _clear(): void;
 }
 
-const DELAY_MS: number = DEVELOPMENT ? 5000 : 500;
+const DELAY_MS: number = DEVELOPMENT ? 300 : 500;
 const SUCCESS_RESPONSE: string = 'OK';
 
 export type GETResponse = {

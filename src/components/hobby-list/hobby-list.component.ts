@@ -99,12 +99,9 @@ export class HobbyList extends HTMLElement {
             'click',
             this._handleClick.bind(this)
         );
-        try {
-            const response: GETResponse = await this._loadHobbies(0, this._state.threshold);
-            this._updateState(response);
-        } catch (e) {
-            console.log('Could not load hobbies from store.');
-        }
+
+        const response: GETResponse = await this._loadHobbies(0, this._state.threshold);
+        this._updateState(response);
 
         this._render();
 
@@ -124,9 +121,6 @@ export class HobbyList extends HTMLElement {
         startIndex: number = 0,
         count: number = 0
     ): Promise<GETResponse> {
-        if (!this._state.loading) {
-            return;
-        }
 
         this._setLoading(true);
 
@@ -141,10 +135,6 @@ export class HobbyList extends HTMLElement {
     }
 
     public async _removeHobby(id: string): Promise<string> {
-        if (this._state.loading) {
-            return;
-        }
-
         this._setLoading(true);
 
         const response: SUCCESSResponse = await Store.delete(id);
@@ -155,10 +145,6 @@ export class HobbyList extends HTMLElement {
     }
 
     public async _updateHobby(id: string, data: Partial<Hobby>): Promise<string> {
-        if (this._state.loading) {
-            return;
-        }
-
         this._setLoading(true);
 
         const response: SUCCESSResponse = await Store.patch(id, data);
