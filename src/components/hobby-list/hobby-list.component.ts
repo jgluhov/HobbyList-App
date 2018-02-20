@@ -2,7 +2,7 @@
  * HobbyListApp | Hobby List Component
  */
 import { Belonging, Hobby } from '@models';
-import { GETResponse, Store } from '@store';
+import { GETResponse, Store, SUCCESSResponse } from '@store';
 import * as Utils from '@utils';
 import * as HobbyListConstants from './hobby-list.constants';
 import { HobbyListService } from './hobby-list.service';
@@ -99,17 +99,19 @@ export class HobbyList extends HTMLElement {
             'click',
             this._handleClick.bind(this)
         );
-
-        const response: GETResponse = await this._loadHobbies(
-            0,
-            this._state.threshold
-        );
-
-        this._updateState(response);
+        try {
+            const response: GETResponse = await this._loadHobbies(0, this._state.threshold);
+            this._updateState(response);
+        } catch (e) {
+            console.log('Could not load hobbies from store.');
+        }
 
         this._render();
 
-        addEventListener(`store:update:${this._state.belonging}`, this._handleStoreUpdate.bind(this));
+        addEventListener(
+            `store:update:${this._state.belonging}`,
+            this._handleStoreUpdate.bind(this)
+        );
     }
 
     public async _handleStoreUpdate(): Promise<void> {
@@ -122,12 +124,44 @@ export class HobbyList extends HTMLElement {
         startIndex: number = 0,
         count: number = 0
     ): Promise<GETResponse> {
+        if (!this._state.loading) {
+            return;
+        }
+
         this._setLoading(true);
 
         const response: GETResponse = await Store.get(
             startIndex, count,
             this._state.belonging
         );
+
+        this._setLoading(false);
+
+        return response;
+    }
+
+    public async _removeHobby(id: string): Promise<string> {
+        if (this._state.loading) {
+            return;
+        }
+
+        this._setLoading(true);
+
+        const response: SUCCESSResponse = await Store.delete(id);
+
+        this._setLoading(false);
+
+        return response;
+    }
+
+    public async _updateHobby(id: string, data: Partial<Hobby>): Promise<string> {
+        if (this._state.loading) {
+            return;
+        }
+
+        this._setLoading(true);
+
+        const response: SUCCESSResponse = await Store.patch(id, data);
 
         this._setLoading(false);
 
@@ -294,19 +328,17 @@ export class HobbyList extends HTMLElement {
         if (this._service.is(target, 'span') &&
             this._state.belonging === Belonging.OWN
         ) {
-            await Store.delete(target.parentElement.id);
-            await this._handleRemove(target.parentElement);
+            await this._removeHobby(target.parentElement.id);
+            this._handleRemove(target.parentElement);
         }
 
         if (this._service.is(target, 'li') &&
             this._state.belonging === Belonging.FRIEND
         ) {
-            await Store.patch(target.id, {
-                belonging: Belonging.OWN
-            });
+            await this._updateHobby(target.id, { belonging: Belonging.OWN });
             target.classList
                 .add(HobbyListConstants.LIST_ITEM_SELECTED_CLASS);
-            await this._handleRemove(target);
+            this._handleRemove(target);
         }
 
         if (this._state.total > this._state.items.length) {

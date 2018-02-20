@@ -691,9 +691,9 @@ describe('HobbyList: Spec', () => {
                 });
 
                 describe('when we remove one element', () => {
-                    it('should decrease threshold', async() => {
+                    it('should decrease threshold', () => {
                         el = <HTMLElement>hobbyList.$listContent.children[0];
-                        await hobbyList._handleRemove(el);
+                        hobbyList._handleRemove(el);
 
                         expect(hobbyList._state.threshold).toBe(7);
                     });
