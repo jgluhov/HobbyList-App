@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "development=true ./node_modules/.bin/webpack-dev-server --inline",
-    "test": "development=true ./node_modules/.bin/karma start"
+    "test": "development=true ./node_modules/.bin/karma start",
+    "build": "./node_modules/.bin/webpack --config ./config/webpack.prod.js"
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "tslint": "^5.9.1",
     "tslint-microsoft-contrib": "^5.0.2",
     "typescript": "^2.7.1",
+    "uglifyjs-webpack-plugin": "^1.2.0",
     "webpack": "^3.11.0",
     "webpack-dev-server": "^2.11.1",
     "webpack-merge": "^4.1.1"

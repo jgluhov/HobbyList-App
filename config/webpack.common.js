@@ -57,7 +57,10 @@ module.exports = {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({
                     use: [{
-                        loader: 'css-loader'
+                        loader: 'css-loader', 
+                        options: {
+                            minimize: !process.env.development
+                        }
                     }, {
                         loader: 'sass-loader'
                     }],                    
@@ -70,7 +73,10 @@ module.exports = {
             {
                 test: /\.scss$/,
                 use: [{
-                    loader: 'css-loader'
+                    loader: 'css-loader',
+                    options: {
+                        minimize: !process.env.development
+                    }
                 }, {
                     loader: 'sass-loader'
                 }], 
