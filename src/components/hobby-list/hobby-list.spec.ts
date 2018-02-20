@@ -443,13 +443,16 @@ describe('HobbyList: Spec', () => {
 
         describe('when we pass force param', () => {
             beforeEach(() => {
+                sandobox.stub(Store, 'delete').callsFake(() => {
+                    return Promise.resolve('OK');
+                });
                 hobbyList._state.items = [ownHobby1];
+
                 insertedElem = <HTMLLIElement>hobbyList._service
                     .toElements([ownHobby1]).firstElementChild;
 
-                hobbyList.$listContent.appendChild(insertedElem);
+                hobbyList._render();
                 classList = hobbyList.$listContent.firstElementChild.classList;
-                hobbyList._state.renderingIndex = 1;
             });
 
             it('should remove hobby from state', async() => {

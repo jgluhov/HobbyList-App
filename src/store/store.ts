@@ -7,7 +7,7 @@ import * as Utils from '@utils';
 interface IStore {
     post(hobby: Hobby): Promise<SUCCESSResponse>;
     get(startIndex?: number, count?: number, belonging?: string): Promise<GETResponse>;
-    delete(id: string, belonging?: string): Promise<SUCCESSResponse>;
+    delete(id: string): Promise<SUCCESSResponse>;
     patch(id: string, data?: Partial<Hobby>): Promise<SUCCESSResponse>;
     getAll(): Promise<GETResponse>;
     _fill(hobbies: Hobby[]): void;
@@ -24,7 +24,7 @@ export type GETResponse = {
 export type SUCCESSResponse = string;
 
 type DelayFn = (ms: number) => Promise<void>;
-type DispatchFn = () => void;
+type DispatchFn = (belonging: string) => void;
 
 export const Store: IStore = ((): IStore => {
     let _data: Hobby[] = [];
@@ -35,8 +35,8 @@ export const Store: IStore = ((): IStore => {
         );
     };
 
-    const dispatchUpdate: DispatchFn  = (): void => {
-        Utils.dispatchEvent('store:update');
+    const dispatchUpdate: DispatchFn  = (belonging: string): void => {
+        Utils.dispatchEvent(`store:update:${belonging}`);
     };
 
     return {
@@ -47,7 +47,7 @@ export const Store: IStore = ((): IStore => {
             ];
 
             await delay(DELAY_MS);
-            dispatchUpdate();
+            dispatchUpdate(hobby.belonging);
 
             return Promise.resolve(SUCCESS_RESPONSE);
         },
@@ -68,37 +68,40 @@ export const Store: IStore = ((): IStore => {
             });
         },
 
-        async patch(
-            id: string,
-            data: Partial<Hobby>
-        ): Promise<SUCCESSResponse> {
+        async patch(id: string, data: Partial<Hobby>): Promise<SUCCESSResponse> {
             const foundHobby: Hobby = _data.find((hobby: Hobby) => hobby.id === id);
+            if (!foundHobby) {
+                Promise.reject(`There are no hobby with this id - ${id}`);
+            }
             _data = _data.filter((hobby: Hobby) => hobby.id !== id);
 
-            if (foundHobby) {
-                const changedHobby: Hobby = {
-                    id: foundHobby.id,
-                    ...foundHobby,
-                    ...data
-                };
-                _data = [
-                    ..._data,
-                    changedHobby
-                ];
-            }
+            const changedHobby: Hobby = {
+                id: foundHobby.id,
+                ...foundHobby,
+                ...data
+            };
+            _data = [
+                ..._data,
+                changedHobby
+            ];
 
             await delay(DELAY_MS);
-            dispatchUpdate();
+            dispatchUpdate(changedHobby.belonging);
 
             return Promise.resolve(SUCCESS_RESPONSE);
         },
 
-        async delete(id: string, belonging: string = Belonging.OWN): Promise<SUCCESSResponse>  {
+        async delete(id: string): Promise<SUCCESSResponse>  {
+            const foundHobby: Hobby = _data.find((hobby: Hobby) => hobby.id === id);
+            if (!foundHobby) {
+                return Promise.reject(`There are no hobby with this id - ${id}`);
+            }
+
             _data = _data
-                .filter((h: Hobby) => h.id !== id)
-                .filter((h: Hobby) => h.belonging === belonging);
+                .filter((h: Hobby) => h.id !== id);
 
             await delay(DELAY_MS);
+            dispatchUpdate(foundHobby.belonging);
 
             return Promise.resolve(SUCCESS_RESPONSE);
         },

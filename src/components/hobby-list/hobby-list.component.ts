@@ -109,7 +109,7 @@ export class HobbyList extends HTMLElement {
 
         this._render();
 
-        addEventListener('store:update', this._handleStoreUpdate.bind(this));
+        addEventListener(`store:update:${this._state.belonging}`, this._handleStoreUpdate.bind(this));
     }
 
     public async _handleStoreUpdate(): Promise<void> {
