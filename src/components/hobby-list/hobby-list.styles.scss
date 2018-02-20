@@ -51,7 +51,11 @@
 
     &.hobby-list__item--removed {
         animation: disappearing .3s 
-            cubic-bezier(.55,-0.04,.91,.94) forwards;
+            cubic-bezier(.55,-0.04,.91,.94) forwards; 
+        
+        > .hobby-list__icon {
+            pointer-events: none;
+        }
     }
 
     &.hobby-list__item--inserted {
@@ -106,6 +110,8 @@
         }
 
         &.hobby-list__item--selected {
+            pointer-events: none;
+
             .hobby-list__icon {
                 @include icon('ok', $hobby-list__icon-size, 0deg);
             }

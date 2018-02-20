@@ -267,6 +267,10 @@ export class HobbyList extends HTMLElement {
 
         const target: HTMLElement = this._service.getElement(e);
 
+        if (this._state.loading) {
+            return;
+        }
+
         if (target.isEqualNode(this.$listFooter)) {
             this._handleFooterClick(e);
         }
