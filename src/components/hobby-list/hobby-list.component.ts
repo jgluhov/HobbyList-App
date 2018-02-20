@@ -320,15 +320,15 @@ export class HobbyList extends HTMLElement {
         ) {
             await this._removeHobby(target.parentElement.id);
             this._handleRemove(target.parentElement);
-        }
-
-        if (this._service.is(target, 'li') &&
+        } else if (this._service.is(target, 'li') &&
             this._state.belonging === Belonging.FRIEND
         ) {
             await this._updateHobby(target.id, { belonging: Belonging.OWN });
             target.classList
                 .add(HobbyListConstants.LIST_ITEM_SELECTED_CLASS);
             this._handleRemove(target);
+        } else {
+            return;
         }
 
         if (this._state.total > this._state.items.length) {

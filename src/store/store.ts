@@ -101,6 +101,7 @@ export const Store: IStore = ((): IStore => {
                 .filter((h: Hobby) => h.id !== id);
 
             await delay(DELAY_MS);
+            dispatchUpdate(foundHobby.belonging);
 
             return Promise.resolve(SUCCESS_RESPONSE);
         },
