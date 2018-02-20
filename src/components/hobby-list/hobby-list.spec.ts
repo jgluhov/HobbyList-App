@@ -278,7 +278,7 @@ describe('HobbyList: Spec', () => {
     describe('#_insert()', () => {
         describe('when there are no elements in listContent', () => {
             beforeEach(() => {
-                hobbyList._insert(0, ownHobby1);
+                hobbyList._insert(ownHobby1);
             });
 
             it('should render list item element', () => {
@@ -305,8 +305,8 @@ describe('HobbyList: Spec', () => {
 
                 hobbyList.$listContent.appendChild(renderedElems);
 
-                hobbyList._insert(1, ownHobby3);
-                li = <HTMLLIElement>hobbyList.$listContent.children.item(1);
+                hobbyList._insert(ownHobby3);
+                li = <HTMLLIElement>hobbyList.$listContent.children.item(2);
             });
 
             it('should insert element at correct place', () => {
@@ -715,7 +715,7 @@ describe('HobbyList: Spec', () => {
                     expect(hobbyList._state.total).toBe(0);
                 });
 
-                it('should remove item from state', async() => {
+                it('should remove item from state', () => {
                     hobbyList._handleRemove(el);
 
                     expect(hobbyList._state.items).toEqual([]);

@@ -13,6 +13,7 @@ import template from './hobby-list.template.html';
 type HobbyListState = {
     threshold: number;
     length: number;
+    step: number;
     belonging: string;
     renderingIndex: number;
     loading: boolean;
@@ -29,6 +30,7 @@ export class HobbyList extends HTMLElement {
     public _state: HobbyListState = {
         threshold: HobbyListConstants.DEFAULT_LENGTH,
         length: HobbyListConstants.DEFAULT_LENGTH,
+        step: HobbyListConstants.THRESHOLD_STEP,
         belonging: Belonging.OWN,
         renderingIndex: 0,
         loading: false,
@@ -54,7 +56,8 @@ export class HobbyList extends HTMLElement {
     static get observedAttributes(): string[] {
         return [
             'belonging',
-            'length'
+            'length',
+            'step'
         ];
     }
 
@@ -63,6 +66,8 @@ export class HobbyList extends HTMLElement {
             this._state.belonging = newValue;
         } else if (attrName === 'length') {
             this._state.length = +newValue || HobbyListConstants.DEFAULT_LENGTH;
+        } else if (attrName === 'step') {
+            this._state.step = +newValue || HobbyListConstants.THRESHOLD_STEP;
         }
     }
 
@@ -89,7 +94,7 @@ export class HobbyList extends HTMLElement {
     public async _loadHobbies(startIndex: number, count: number): Promise<StoreResponse> {
         this._setLoading(true);
 
-        const response: StoreResponse = await Store.get(startIndex, count);
+        const response: StoreResponse = await Store.get(startIndex, count, this._state.belonging);
 
         this._setLoading(false);
 
@@ -129,7 +134,7 @@ export class HobbyList extends HTMLElement {
             this._state.renderingIndex < this._state.items.length
         ) {
             const hobby: Hobby = this._state.items[this._state.renderingIndex];
-            this._insert(this._state.renderingIndex, hobby);
+            this._insert(hobby);
         }
     }
 
@@ -161,14 +166,11 @@ export class HobbyList extends HTMLElement {
         }
     }
 
-    public _insert(indexAt: number, hobby: Hobby): void {
-        const prevEl: HTMLLIElement = <HTMLLIElement>this.$listContent
-            .children.item(indexAt);
-
+    public _insert(hobby: Hobby): void {
         const newEl: DocumentFragment = this.service.toElements([ hobby ]);
         newEl.firstElementChild.classList.add(HobbyListConstants.LIST_ITEM_INSERTED_CLASS);
 
-        this.$listContent.insertBefore(newEl, prevEl);
+        this.$listContent.appendChild(newEl);
         this._state.renderingIndex += 1;
     }
 
@@ -220,7 +222,7 @@ export class HobbyList extends HTMLElement {
         if (this._state.threshold < this._state.total) {
             const startIndex: number = Math.min(this._state.threshold, this._state.renderingIndex);
             const next: number = Math.min(
-                startIndex + HobbyListConstants.THRESHOLD_STEP,
+                startIndex + this._state.step,
                 this._state.total
             );
             this._state.threshold += next - this._state.threshold;
@@ -248,7 +250,13 @@ export class HobbyList extends HTMLElement {
             await this._handleRemove(target.parentElement);
         }
 
-        this._render();
+        if (this._state.total > this._state.items.length) {
+            const response: StoreResponse = await Store.get(
+                this._state.renderingIndex, 1
+            );
+            this._updateState(response);
+            this._render();
+        }
     }
 
     public _handleRemove(el: HTMLElement): void {

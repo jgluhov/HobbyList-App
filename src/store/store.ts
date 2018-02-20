@@ -37,7 +37,7 @@ export const Store: IStore = ((): IStore => {
                 hobby
             ];
 
-            await delay(1000);
+            await delay(DELAY_MS);
 
             return Promise.resolve({
                 items: [ ..._data ],
