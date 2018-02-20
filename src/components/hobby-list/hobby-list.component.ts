@@ -69,9 +69,12 @@ export class HobbyList extends HTMLElement {
         if (attrName === 'belonging') {
             this._state.belonging = newValue;
         } else if (attrName === 'length') {
-            this._state.length = +newValue || HobbyListConstants.DEFAULT_LENGTH;
+            const length: number = !isNaN(+newValue) ?
+                +newValue : HobbyListConstants.DEFAULT_LENGTH;
+            this._state.threshold = this._state.length = length;
         } else if (attrName === 'step') {
-            this._state.step = +newValue || HobbyListConstants.THRESHOLD_STEP;
+            this._state.step = !isNaN(+newValue) ?
+                +newValue : HobbyListConstants.THRESHOLD_STEP;
         }
     }
 
@@ -105,11 +108,19 @@ export class HobbyList extends HTMLElement {
         this._updateState(response);
 
         this._render();
+
+        addEventListener('store:update', this._handleStoreUpdate.bind(this));
+    }
+
+    public async _handleStoreUpdate(): Promise<void> {
+        const response: GETResponse = await this._loadHobbies();
+        this._updateState(response);
+        this._render();
     }
 
     public async _loadHobbies(
-        startIndex: number,
-        count: number
+        startIndex: number = 0,
+        count: number = 0
     ): Promise<GETResponse> {
         this._setLoading(true);
 
