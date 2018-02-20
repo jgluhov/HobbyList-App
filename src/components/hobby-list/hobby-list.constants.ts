@@ -12,6 +12,7 @@ export const LIST_ICON_CLASS: string = 'hobby-list__icon';
 export const LIST_ITEM_CLASS: string = 'hobby-list__item';
 export const LIST_ITEM_INSERTED_CLASS: string = 'hobby-list__item--inserted';
 export const LIST_ITEM_REMOVED_CLASS: string = 'hobby-list__item--removed';
+export const LIST_ITEM_SELECTED_CLASS: string = 'hobby-list__item--selected';
 
 export const FOOTER_EMPTY_LABEL: string = 'Список пуст';
 export const FOOTER_REMAINING_LABEL: string = 'Еще {n} увлечений(я)';

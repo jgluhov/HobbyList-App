@@ -94,27 +94,23 @@
     }
 }
 
-// :host .hobby-list--friend {
-//     .hobby-list__item {
-//         &:not(.hobby-list__item--selected) {
-//             &:hover {
-//                 .hobby-list__icon {
-//                     @include icon('close', $hobby-list-icon-size, 45deg);
-//                 }
-//             }
-//         }
+:host .hobby-list--friend {
+    .hobby-list__item {
+        &:not(.hobby-list__item--selected) {
+            &:hover {
+                .hobby-list__icon {
+                    @include icon('close', $hobby-list__icon-size, 45deg);
+                }
+            }
+        }
 
-//         &.hobby-list__item--selected {
-//             .hobby-list__icon {
-//                 @include icon('ok', $hobby-list-icon-size, 0deg);
-//             }
-
-//             opacity: 0;
-//             transition-property: opacity;
-//             transition-duration: $hobby-list-item-duration;
-//         }
-//     }
-// }
+        &.hobby-list__item--selected {
+            .hobby-list__icon {
+                @include icon('ok', $hobby-list__icon-size, 0deg);
+            }
+        }
+    }
+}
 
 :host .hobby-list__footer {
     font-size: $font-size-small;

@@ -250,8 +250,19 @@ export class HobbyList extends HTMLElement {
             await this._handleRemove(target.parentElement);
         }
 
+        if (this.service.is(target, 'li') &&
+            this._state.belonging === Belonging.FRIEND
+        ) {
+            await Store.patch(target.id, {
+                belonging: Belonging.OWN
+            });
+            target.classList
+                .add(HobbyListConstants.LIST_ITEM_SELECTED_CLASS);
+            await this._handleRemove(target);
+        }
+
         if (this._state.total > this._state.items.length) {
-            const response: GETResponse = await Store.get(
+            const response: GETResponse = await this._loadHobbies(
                 this._state.renderingIndex, 1
             );
             this._updateState(response);
@@ -265,6 +276,7 @@ export class HobbyList extends HTMLElement {
         this._state.items = this._state.items.filter((hobby: Hobby) => {
             return hobby.id !== el.id;
         });
+
         el.classList.add(HobbyListConstants.LIST_ITEM_REMOVED_CLASS);
 
         if (this._state.threshold > this._state.length) {
